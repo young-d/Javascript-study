@@ -14,13 +14,10 @@ class SinglyLinkedList {
 
     //검색
     find(value) {
+        if(this.head === null) return null;
         let currNode = this.head;
-        try {
-            while(currNode.value !== value) {
-                currNode = currNode.next;
-            }
-        }catch(e) {
-            console.log(`${e.name} :: ${e.message}`);
+        while(currNode.value !== value) {
+            currNode = currNode.next;
         }
         return currNode;
     }
@@ -28,47 +25,35 @@ class SinglyLinkedList {
     //맨 뒤 노드에 추가
     append(newValue) {
         const newNode = new Node(newValue);
-        try {
-            if(this.head === null) {
-                this.head = newNode;
-                this.tail = newNode;
-            }else {
-                this.tail.next = newNode;
-                this.tail = newNode;
-            }
-            this.size++;
-        }catch(e) {
-            console.log(`${e.name} :: ${e.message}`);
+        if(this.head === null) {
+            this.head = newNode;
+            this.tail = newNode;
+        }else {
+            this.tail.next = newNode;
+            this.tail = newNode;
         }
+        this.size++;
     }
 
     //중간에 노드 추가
     insert(node, newValue) {
         const newNode = new Node(newValue);
-        try {
-            newNode.next = node.next;
-            node.next = newNode;
-            this.size++;
-        }catch(e) {
-            console.log(`${e.name} :: ${e.message}`);
-        }
-        
+        newNode.next = node.next;
+        node.next = newNode;
+        if(node.next === this.tail) this.tail = newNode;
+        this.size++;
     }
 
     //삭제
     remove(value) {
         let prevNode = this.head;
-        try {
-            while(prevNode.next.value !== value) {
-                prevNode = prevNode.next;
-            }
-    
-            if(prevNode.next !== null) {
-                prevNode.next = prevNode.next.next;
-                this.size--;
-            }
-        }catch(e) {
-            console.log(`${e.name} :: ${e.message}`);
+        while(prevNode.next.value !== value) {
+            prevNode = prevNode.next;
+        }
+
+        if(prevNode.next !== null) {
+            prevNode.next = prevNode.next.next;
+            this.size--;
         }
     }
 
@@ -76,16 +61,12 @@ class SinglyLinkedList {
     display() {
         let currNode = this.head;
         let displayString = '[';
-        try {
-            while(currNode !== null) {
-                displayString += `${currNode.value}, `;
-                currNode = currNode.next;
-            }
-            displayString = displayString 
-                .substr(0, displayString.length - 2);
-        }catch(e) {
-            console.log(`${e.name} :: ${e.message}`);
+        while(currNode !== null) {
+            displayString += `${currNode.value}, `;
+            currNode = currNode.next;
         }
+        displayString = displayString 
+            .substr(0, displayString.length - 2);
         displayString += ']';
         console.log(displayString);
     }
@@ -99,6 +80,7 @@ class SinglyLinkedList {
 
 //test
 const linkedList = new SinglyLinkedList();
+console.log(linkedList.find(2));
 linkedList.append(1);
 linkedList.append(2);
 linkedList.append(3);
