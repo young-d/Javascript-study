@@ -5,37 +5,39 @@ class Node {
         this.right = null;
     }
 }
-
 class Tree {
     constructor(node) {
         this.root = node;
     } 
 
     //전위 순회
-    preOrder(node) {
+    preOrder(node, array) {
         if(!node) return;
 
-        process.stdout.write(`${node.value} `);
-        this.preOrder(node.left);
-        this.preOrder(node.right);
+        // process.stdout.write(`${node.value} `);
+        array.push(node.value);
+        this.preOrder(node.left, array);
+        this.preOrder(node.right, array);
     }
 
     //중위 순회
-    inOrder(node) {
+    inOrder(node, array) {
         if(!node) return;
 
-        this.inOrder(node.left);
-        process.stdout.write(`${node.value} `);
-        this.inOrder(node.right);
+        this.inOrder(node.left, array);
+        // process.stdout.write(`${node.value} `);
+        array.push(node.value);
+        this.inOrder(node.right, array);
     }
 
     //후위 순회
-    postOrder(node) {
+    postOrder(node, array) {
         if(!node) return;
 
-        this.postOrder(node.left);
-        this.postOrder(node.right);
-        process.stdout.write(`${node.value} `);
+        this.postOrder(node.left, array);
+        this.postOrder(node.right, array);
+        // process.stdout.write(`${node.value} `);
+        array.push(node.value);
     }
 
 }
@@ -49,11 +51,17 @@ tree.root.right.left = new Node(6);
 tree.root.right.right = new Node(7);
 
 console.log(`preorder: `);
-tree.preOrder(tree.root);
-console.log(`\ninorder:`);
-tree.inOrder(tree.root);
-console.log(`\npostorder:`);
-tree.postOrder(tree.root);
+const preorder = [];
+tree.preOrder(tree.root, preorder);
+console.log(...preorder);
+console.log(`inorder: `);
+const inorder = [];
+tree.inOrder(tree.root, inorder);
+console.log(...inorder);
+console.log(`postorder: `);
+const postorder = [];
+tree.postOrder(tree.root, postorder);
+console.log(...postorder);
 
 /** 실행결과
 preorder: 
