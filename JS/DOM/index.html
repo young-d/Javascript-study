@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Simple Editor</title>
+    <link href="index.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<!--
+    <div class="toolbar">
+        <button class="bold">Bold</button>
+        <button class="italic">Italic</button>
+        <button class="align-left">Aling Left</button>
+        <button class="align-right">Aling Right</button>
+        <button class="align-center">Aling Center</button>
+    </div>
+-->
+
+    <div class="toolbar">
+        <button data-command="bold">Bold</button>
+        <button data-command="italic">Italic</button>
+        <button data-command="underline">Underline</button>
+        <button data-command="strikeThrough">StrikeThrough</button>
+        <button data-command="justifyLeft">Aling Left</button>
+        <button data-command="justifyRight">Aling Right</button>
+        <button data-command="justifyCenter">Aling Center</button>
+    </div>
+
+    <div class="editor" contenteditable="true"></div>
+
+    <script src="index.js"></script>
+</body>
+</html>
