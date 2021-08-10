@@ -4,10 +4,11 @@ function solution(s){
     for(const bracket of s) {
         if(bracket === '(') stack.push(bracket);
         else {
-            if(stack.length === 0) return false;
+            if(!stack.length) return false;
             stack.pop();
         }
     }    
 
-    return stack.length === 0;
+    return stack.length ? false : true;
+//    return stack.length === 0;
 }
