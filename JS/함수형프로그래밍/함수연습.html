@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HTML에서 장바구니 항목 출력해보기</title>
+    <script src="./functoin.js"></script>
+</head>
+<body>
+    <script>
+        const products = [
+            { name: '반팔티', price: 15000, quantity: 1 },
+            { name: '긴팔티', price: 20000, quantity: 2 },
+            { name: '핸드폰케이스', price: 15000, quantity: 3 },
+            { name: '후드티', price: 30000, quantity: 4 },
+            { name: '바지', price: 25000, quantity: 5 }
+        ];
+
+        //1.
+        //총 수량
+        const total_quantity_v1 = products => go(products,
+            map(p => p.quantity),
+            reduce((a, b) => a + b)
+        );
+        console.log(total_quantity_v1(products)); //15
+        
+        //총 가격
+        const total_price_v1 = products => go(products,
+            map(p => p.price * p.quantity),
+            reduce((a, b) => a + b)
+        );
+        console.log(total_price_v1(products)); //345000
+        
+        
+        
+        
+        //2. go -> pipe
+        const total_quantity_v2 = pipe(
+            map(p => p.quantity),
+            reduce((a, b) => a + b)
+        );
+        console.log(total_quantity_v2(products)); //15
+        
+        const total_price_v2 = pipe(
+            map(p => p.price * p.quantity),
+            reduce((a, b) => a + b)
+        );
+        console.log(total_price_v2(products)); //345000
+                
+                
+                
+    
+        
+        //3. add함수(중복 제거)
+        const add = (a, b) => a + b;
+
+        const total_quantity_v3 = pipe(
+            map(p => p.quantity),
+            reduce(add)
+        );
+        console.log(total_quantity_v3(products)); //15
+
+        const total_price_v3 = pipe(
+            map(p => p.price * p.quantity),
+            reduce(add)
+        );
+        console.log(total_price_v3(products)); //345000
+
+
+
+        
+        //4. quantity로 특정하기 보다는 더 추상화하기 -> sum함수(중복 제거)
+        const sum = (f, iter) => go(
+            iter,
+            map(f),
+            reduce(add)
+        );
+
+        const total_quantity_v4 = sum(p => p.quantity, products);
+        console.log(total_quantity_v4); //15
+        
+        const total_price_v4 = sum(p => p.price * p.quantity, products);
+        console.log(total_price_v4); //345000
+
+
+        //sum은 특정 products라는 객체 뿐만 아니라 다른 이터러블 객체도 받을 수 있으므로 추상화 레벨이 훨씬 높다.
+        console.log(sum(u => u.age, [
+            { age: 30 },
+            { age: 20 },
+            { age: 10 }
+        ])); //60
+        
+
+
+        //5. sum + curry로 보조함수를 사용하기
+        const sumWithCurry = curry((f, iter) => go(
+            iter,
+            map(f),
+            reduce(add)
+        ));
+
+        //const total_quantity_v5 = products => sumWithCurry(p => p.quantity)(products);
+        const total_quantity_v5 = sumWithCurry(p => p.quantity);
+        console.log(total_quantity_v5(products)); //15
+        
+        //const total_price_v5 = products => sumWithCurry(p => p.price * p.quantity)(products);
+        const total_price_v5 = sumWithCurry(p => p.price * p.quantity);
+        console.log(total_price_v5(products)); //345000
+
+
+    </script>
+</body>
+</html>
