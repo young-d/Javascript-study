@@ -18,5 +18,3 @@ function solution(tickets) {
 
     return answer.sort()[0].split(',');
 }
-
-solution([["ICN", "SFO"], ["ICN", "ATL"], ["SFO", "ATL"], ["ATL", "ICN"], ["ATL","SFO"]]);
