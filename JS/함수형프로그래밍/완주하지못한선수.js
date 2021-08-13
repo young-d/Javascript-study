@@ -30,7 +30,6 @@ function* entries(obj) {
     for (const k in obj) yield [k, obj[k]];
 }
 
-
 const head = ([a]) => a;
 
 //이름을 리턴하도록 첫번째 요소를 리턴
@@ -48,7 +47,8 @@ const solution = (participant, completion) =>
 //object로 들어오는 인자들을 받는다
 //entries: 참가자 객체를 [[name, count]] 형태로 바꿔준다
 //filter: 참가자 배열의 name으로 완주자 객체에서 해당하는 이름의 개수가 count보다 작은 [name, count](완주하지 못한 선수)를 반환한다
-//head: 반환된 [name, count]에서 name만 반환한다
+//head: 첫번째 값만 반환한다
+//front: 배열에서 이름만 반환한다 
 const failer = (participant, completion) => go(
     participant,
     entries,
