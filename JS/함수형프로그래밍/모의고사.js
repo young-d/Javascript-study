@@ -1,69 +1,4 @@
-function map(f) {
-    return function* (iter) {
-        for (const a of iter) yield f(a);
-    }
-}
-
-function reduce(f) {
-    return function (acc, iter) {
-        if (!iter) acc = (iter = acc[Symbol.iterator]()).next().value;
-        for (const a of iter) acc = f(acc, a);
-        return acc;
-    }
-}
-
-function take(limit) {
-    return function* (iter) {
-        for (const a of iter) {
-            yield a;
-            if (--limit === 0) break;
-        }
-    }
-}
-
-function go(arg, ...fs) {
-    return reduce((arg, f) => f(arg))(arg, fs);
-}
-
-const head = ([a]) => a;
-  
-function inc(parent, k) {
-    parent[k] ? parent[k]++ : (parent[k] = 1);
-    return parent;
-}
-  
-const countBy = (f) => (iter) =>
-    reduce((counts, a) => inc(counts, f(a)))({}, iter);
-
-const identity = a => a;
-
-const count = countBy(identity);
-
-const groupBy = (f) => (iter) =>
-    reduce(
-        (group, a, k = f(a)) => ((group[k] = (group[k] || [])).push(a), group)
-    )({}, iter);
-
-
-const isFlatable = a =>
-    a != null && !!a[Symbol.iterator] && typeof a !== 'string';
-
-function* flat(iter) {
-    for (const a of iter) isFlatable(a) ? yield* a : yield a;
-}
-
-function zip(a) {
-    return function* (b) {
-        a = a[Symbol.iterator]();
-        b = b[Symbol.iterator]();
-        while (true) {
-            const { value, done } = a.next();
-            const { value: value2, done: done2 } = b.next();
-            if (done && done2) break;
-            yield [value, value2];
-        }
-    }
-}
+import { map, take, go, countBy, groupBy, flat, zip } from "./lib.js";
 
 const students = [
     { name: 1, pattern: [1, 2, 3, 4, 5] },
@@ -85,7 +20,7 @@ const randomAnswers = (pattern, length) => go(
     take(length)
 );
 
-//
+//답 전체를 구해 정답과 하나씩 맞춰보면서 점수 매기기
 const scoring = (answers) => ({name, pattern}) => ({
     name,
     score: go(
@@ -96,14 +31,16 @@ const scoring = (answers) => ({name, pattern}) => ({
     ),
 });
 
+//구해진 각 학생들의 점수 중에서 가장 큰 값을 찾아 그 학생의 이름을 배열에 담아 리턴
 const solution = (answers) => go(
     students,
     map(scoring(answers)),
     groupBy(({ score }) => score), //숫자가 큰 키가 뒤로간다
-    Object.values, 
+    Object.values, //학생들의 이름을 가져온다.
     last,
     map(({ name }) => name),
     (_) => [..._]
 );
 
-console.log(solution([1,2,3,4,5]));
+console.log(solution([1, 2, 3, 4, 5])); //[1]
+console.log(solution([1, 3, 2, 4, 2])); //[1, 2, 3]
