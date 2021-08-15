@@ -15,7 +15,7 @@ function* repeat(a) {
 //패턴을 반복하며 문제 개수만큼 길이를 가지는 배열로 각 학생의 전체 답 구하기
 const randomAnswers = (pattern, length) => go(
     pattern, 
-    repeat, 
+    (a) => a,
     flat, 
     take(length)
 );
