@@ -107,3 +107,7 @@ export function zip(a) {
 export function concat(...args) {
   return flat(args);
 }
+
+export const pipe = (f, ...fs) => (...args) => go(f(...args), ...fs);
+
+export const curry = f => (a, ..._) => _.length ? f(a, ..._) : (..._) => f(a, ..._); 
