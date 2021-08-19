@@ -1,28 +1,36 @@
-import { map, go, zip } from "./lib.js";
+import { map, go, zip, reduce, inc } from "./lib.js";
 
-const termsForDeploy = (progresses, speeds) => go(
-    zip(progresses)(speeds),
-    map(([progress, speed]) => Math.ceil((100 - progress) / speed)),
-    ([..._]) => [..._]
-);
+// const termsForDeploy = (progresses, speeds) => go(
+//     zip(progresses)(speeds),
+//     map(([progress, speed]) => Math.ceil((100 - progress) / speed))
+// );
 
-const countFeature = (terms) => {
-    let max = terms[0];
-    return terms.reduce((acc, term) => {
-        if (!acc[acc.length - 1]) acc.push(0);
-        if (term > max) {
-            acc.push(1);
-            max = term;
-        } else {
-            acc[acc.length - 1]++;
-        }
-        return acc; 
-    }, []);
-}
+
+// const countFeature = (terms) => 
+//     reduce(([ counts, maxTerm ], currTerm) => 
+//         maxTerm < terms 
+//             ? [inc(counts, counts.length), currTerm]
+//             : [inc(counts, counts.length - 1), maxTerm])([[], 0], terms);
+
+
+// const solution = (progresses, speeds) => go(
+//     termsForDeploy(progresses, speeds),
+//     countFeature,
+//     head
+// );
+
+const countFeature = terms =>
+    reduce(({ counts, maxTerm}, currTerm) =>
+        maxTerm < currTerm
+            ? { counts: inc(counts, counts.length), maxTerm: currTerm }
+            : { counts: inc(counts, counts.length-1), maxTerm: maxTerm })({ counts: [], maxTerm: 0 }, terms);
 
 const solution = (progresses, speeds) => go(
-    termsForDeploy(progresses, speeds),
-    countFeature
+    speeds,
+    zip(progresses),
+    map(([progress, speed]) => Math.ceil((100 - progress) / speed)),
+    countFeature,
+    result => result.counts
 );
 
 console.log(solution([93, 30, 55], [1, 30, 5])); //[2, 1]

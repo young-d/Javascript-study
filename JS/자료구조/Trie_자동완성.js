@@ -77,14 +77,11 @@ class Trie {
 
         while (queue.size()) {
             let currNode = queue.dequeue();
-            console.log(queue, currNode.value);
 
             //자식 노드가 있으면 자식 노드들의 value를 queue에 넣고, 자식 노드가 없다면 leaf 노드 이므로 value를 반환값에 추가
-            if (currNode.children.size) {
-                [...currNode.children.values()].map((value) => queue.enqueue(value));
-            }else {
-                words.push(currNode.value);
-            }
+            currNode.children.size
+                ? [...currNode.children.values()].filter((value) => queue.enqueue(value))
+                : words.push(currNode.value);
         }
         
         return words;
