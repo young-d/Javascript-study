@@ -1,4 +1,5 @@
-import { request } from './api.js';
+// import { request } from './api.js';
+import { requestPromise } from './api_promise.js';
 import TodoList from './TodoList.js';
 import TodoComments from './TodoComments.js';
 
@@ -21,19 +22,18 @@ export default function App({ $target }) {
     const todoList = new TodoList({
         $target,
         initialState: this.state.todos,
-        onClick: (id) => {
+        onClick: async (id) => {
             const selectedTodo = this.state.todos.find(todo => todo.id === id);
             this.setState({
                 ...this.state,
                 selectedTodo
             })
 
-            request('https://kdt.roto.codes/comments?todo.id=${id}', data => {
-                this.setState(
-                    ...this.state,
-                    selectedTodo
-                )
-            })
+            const data = await requestPromise('https://kdt.roto.codes/comments?todo.id=${id}');
+            this.setState({
+                ...this.state,
+                comments: data
+            });
         }
     })
     
@@ -45,14 +45,13 @@ export default function App({ $target }) {
         }
     })
 
-    const init = () => {
-        request('https://kdt.roto.codes/todos', (data) => {
-            //성공했을 때
-            //console.log(data);
-            this.setState({
-                ...this.state,
-                todos: data
-            })
+    const init = async () => {
+        const data = await requestPromise('https://kdt.roto.codes/todos');
+        //성공했을 때
+        //console.log(data);
+        this.setState({
+            ...this.state,
+            todos: data
         })
     }
 
