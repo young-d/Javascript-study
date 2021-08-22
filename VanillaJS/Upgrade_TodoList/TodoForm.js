@@ -1,5 +1,12 @@
 //form과 관련된 일을 처리
 export default function TodoForm({ $target, onSubmit }) {
+    //new 연산자 없을 경우
+    if (!(this instanceof TodoForm)) {
+        console.error('There is no new operator');
+        //new로 다시 생성해주기
+        return new TodoForm({ $target, onSubmit });
+    }
+    
     const $form = document.createElement('form');
 
     $target.appendChild($form);

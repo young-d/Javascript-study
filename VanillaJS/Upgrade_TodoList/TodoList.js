@@ -1,10 +1,15 @@
-//params.$target - 해당 컴포넌트가 추가가 될 DOM 엘리먼트
-//params.initialState - 해당 컴포넌트의 초기 상태
 export default function TodoList({ $target, initialState, onClick }) {
+    //new 연산자 없을 경우
+    if (!(this instanceof TodoList)) {
+        console.error('There is no new operator');
+        //new로 다시 생성해주기
+        return new TodoList({ $target, initialState, onClick });
+    }
+
     const $todoList = document.createElement('div');
     $target.appendChild($todoList);
 
-    this.state = initialState ? initialState : null;
+    this.state = initialState;
 
     this.setState = nextState => {
         this.state = nextState ? nextState : this.state;
@@ -13,37 +18,41 @@ export default function TodoList({ $target, initialState, onClick }) {
 
     this.render = () => {
         $todoList.innerHTML = `
-            <ul id="todoList">
-                ${this.state.map(({ text, id, isCompleted }) => 
-                    `<li completed=${isCompleted}>
-                        <label>${text}</label><button class="check" id=${id}>완료</button>
+            <ul style="list-style:none;">
+                ${this.state.map(({ id, text, isCompleted }) => 
+                    `<li class="todos" completed=${isCompleted}>
+                        <input type="checkbox" id=${id} class="check">
+                        <label class="contents">${text}</label>
                     </li>`)
                     .join('')
                 }
             </ul>
         `;
 
-        const todos = $todoList.getElementsByTagName('label');
-        
-        for (const todo of todos) {
-            if (todo.parentElement.getAttribute("completed") === 'true') {
-                todo.style.textDecoration = 'line-through';
-                todo.nextElementSibling.textContent = '✅';
+        //completed 상태에 따라 취소선 및 체크박스 스타일 설정
+        document.querySelectorAll('.todos').forEach((todo) => {
+            const completed = todo.getAttribute('completed');
+            const $checkBox = todo.firstElementChild;
+            const $label = todo.lastElementChild;
+
+            if (completed === 'true') {
+                $checkBox.checked = true;
+                $label.style.textDecoration = 'line-through';
             } else {
-                todo.style.textDecoration = '';
-                todo.nextElementSibling.textContent = '🟩';
+                $checkBox.checked = false;
+                $label.style.textDecoration = '';
             }
-        }
+        });
 
-        const buttons = $todoList.getElementsByTagName('button');
+        //checkbox 클릭이벤트
+        document.querySelectorAll('.check').forEach(check => {
+            const todoId = parseInt(check.getAttribute('id'));
 
-        for (const b of buttons) {
-            b.addEventListener('click', (e) => {
-                onClick(e.target.id);
+            check.addEventListener('click', (e) => {
+                onClick(todoId);
             })
-        }
+        })
     }
     
     this.render();
-   
 }
