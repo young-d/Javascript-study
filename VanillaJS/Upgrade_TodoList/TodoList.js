@@ -4,10 +4,8 @@ export default function TodoList({ $target, initialState, onClick }) {
     const $todoList = document.createElement('div');
     $target.appendChild($todoList);
 
-    //현재 내 상태를 기준으로 render하기
     this.state = initialState ? initialState : null;
 
-    //Todo List의 상태를 변하게 하기
     this.setState = nextState => {
         this.state = nextState ? nextState : this.state;
         this.render();
@@ -37,7 +35,6 @@ export default function TodoList({ $target, initialState, onClick }) {
             }
         }
 
-        //초기화하면서 클릭 이벤트 추가해주기 (토글기능)
         const buttons = $todoList.getElementsByTagName('button');
 
         for (const b of buttons) {
@@ -47,7 +44,6 @@ export default function TodoList({ $target, initialState, onClick }) {
         }
     }
     
-    //생성되자마자 렌더링 된다.
     this.render();
    
 }

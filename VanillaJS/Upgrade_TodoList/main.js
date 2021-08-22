@@ -1,8 +1,11 @@
 import App from './App.js';
+import { getItem } from './storage.js';
 
-const $target = document.querySelector('.app');
+const initialState = getItem('todos', []);
 
-//App.js로 역할 나눠주기
+const $target= document.querySelector('.app');
+
 new App({
-    $target
+    $target,
+    initialState
 });
