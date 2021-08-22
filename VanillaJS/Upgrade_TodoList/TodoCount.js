@@ -9,9 +9,6 @@ export default function TodoCount({ $target, initialState }) {
     const $todoCount = document.createElement('h3');
     $target.append($todoCount);
 
-    //플래그
-    let isInit = false;
-
     this.state = initialState;
 
     this.setState = nextState => {
@@ -20,10 +17,7 @@ export default function TodoCount({ $target, initialState }) {
     }
 
     this.render = () => {
-        if (!isInit) {
-            $todoCount.textContent = `Done: ${this.state.completedCount} / Todo: ${this.state.totalCount}`;
-        }
-        isInit = true;
+        $todoCount.textContent = `Done: ${this.state.completedCount} / Todo: ${this.state.totalCount}`;
     }
 
     this.render();

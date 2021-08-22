@@ -3,6 +3,7 @@ import TodoForm from './TodoForm.js';
 import TodoList from './TodoList.js';
 import TodoCount from './TodoCount.js';
 import { setItem , getItem } from './storage.js';
+import { validateTextMaxLength, validateDuplication } from './validation.js';
 
 export default function App({ $target }) {
     //todoList 타이틀
@@ -15,18 +16,25 @@ export default function App({ $target }) {
     TodoForm({
         $target,
         onSubmit: (text) => {
-            const nextState = [...todoList.state, {
-                id: todoList.state.length + 1,
-                text,
-                isCompleted: false
-            }];
-            todoList.setState(nextState ? nextState : todoList.state);
-            setItem('todos', JSON.stringify(nextState));
+            const nextState = getItem('todos', []);
 
-            todoCount.setState({
-                completedCount: todoCount.state.completedCount,
-                totalCount: getItem('todos', []).length
-            });
+            //text 길이, 중복여부 체크
+            if (validateTextMaxLength(text) 
+                && validateDuplication(text, nextState)
+                ) {
+                nextState.push({
+                    id: todoList.state.length,
+                    text,
+                    isCompleted: false
+                });
+                todoList.setState(nextState);
+                setItem('todos', JSON.stringify(nextState));
+                
+                todoCount.setState({
+                    completedCount: todoCount.state.completedCount,
+                    totalCount: getItem('todos', []).length
+                });
+            }
         } 
     });
 
@@ -60,6 +68,4 @@ export default function App({ $target }) {
             totalCount: getItem('todos', []).length
         }
     })
-    
-
 }
