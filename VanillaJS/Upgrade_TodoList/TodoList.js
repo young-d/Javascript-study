@@ -52,15 +52,6 @@ export default function TodoList({ $target, initialState, onChange, onClick }) {
                 onClick(todoId);
             })
         });
-        
-
-        // document.querySelectorAll('.check').forEach(check => {
-        //     const todoId = parseInt(check.getAttribute('id'));
-
-        //     check.addEventListener('click', (e) => {
-        //         onClick(todoId);
-        //     })
-        // })
     }
     
     this.render();

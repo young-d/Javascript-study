@@ -1,6 +1,5 @@
 const storage = window.localStorage;
 
-// const storage = (function(storage) {
 export const setItem = (key, value) => {
     try {
         storage.setItem(key, value);

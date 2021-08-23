@@ -1,4 +1,3 @@
-//header와 관련된 일을 처리
 export default function Header({ $target, text }) {
     //new 연산자 없을 경우
     if (!(this instanceof Header)) {

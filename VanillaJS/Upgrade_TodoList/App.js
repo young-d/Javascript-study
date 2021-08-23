@@ -6,13 +6,11 @@ import { setItem , getItem } from './storage.js';
 import { validateTextMaxLength, validateDuplication } from './validation.js';
 
 export default function App({ $target }) {
-    //todoList 타이틀
     new Header({ 
         $target,
         text: 'Upgrade Todo list!' 
     });
 
-    //todoList 입력폼
     TodoForm({
         $target,
         onSubmit: (text) => {
@@ -38,7 +36,6 @@ export default function App({ $target }) {
         } 
     });
 
-    //todoList 출력과 클릭 이벤트
     const todoList = TodoList({
         $target,
         initialState: getItem('todos', []),
@@ -75,7 +72,6 @@ export default function App({ $target }) {
         }
     });
 
-    //todoList의 완료개수/전체개수
     const todoCount = TodoCount({
         $target,
         initialState: {

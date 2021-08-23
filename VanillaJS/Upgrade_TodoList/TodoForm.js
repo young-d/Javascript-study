@@ -18,10 +18,9 @@ export default function TodoForm({ $target, onSubmit }) {
             <button id="addButton">+</button>
         `;
 
-        //submit 이벤트
         if (!isInit) {
             $form.addEventListener('submit', e => {
-                e.preventDefault(); //기존 submit 이벤트 제거
+                e.preventDefault();
 
                 const $todo = $form.querySelector('input[name=todo]');
                 const text = $todo.value;
