@@ -23,7 +23,7 @@ export default function App({ $target }) {
                 && validateDuplication(text, nextState)
                 ) {
                 nextState.push({
-                    id: todoList.state.length,
+                    id: (nextState.length > 0 ? nextState[nextState.length - 1].id : 0) + 1,
                     text,
                     isCompleted: false
                 });
@@ -42,9 +42,13 @@ export default function App({ $target }) {
     const todoList = TodoList({
         $target,
         initialState: getItem('todos', []),
-        onClick: (id) => {
-            const nextState = getItem('todos', []);
-            nextState[id].isCompleted = !nextState[id].isCompleted;
+        onChange: (id) => {
+            const nextState = getItem('todos', []).map(todo => {
+                if(todo.id === id) {
+                    todo.isCompleted = !todo.isCompleted;
+                }
+                return todo;
+            });
 
             todoList.setState(nextState);
             setItem('todos', JSON.stringify(nextState));
@@ -54,6 +58,19 @@ export default function App({ $target }) {
                                 .filter(todo => todo.isCompleted)
                                 .length,
                 totalCount: todoCount.state.totalCount
+            });
+        },
+        onClick: (id) => {
+            const nextState = getItem('todos', []).filter(todo => todo.id !== id);
+
+            todoList.setState(nextState);
+            setItem('todos', JSON.stringify(nextState));
+
+            todoCount.setState({
+                completedCount: nextState
+                                .filter(todo => todo.isCompleted)
+                                .length,
+                totalCount: getItem('todos', []).length
             });
         }
     });

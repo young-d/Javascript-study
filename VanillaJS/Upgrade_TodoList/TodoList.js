@@ -1,9 +1,9 @@
-export default function TodoList({ $target, initialState, onClick }) {
+export default function TodoList({ $target, initialState, onChange, onClick }) {
     //new 연산자 없을 경우
     if (!(this instanceof TodoList)) {
         console.error('There is no new operator');
         //new로 다시 생성해주기
-        return new TodoList({ $target, initialState, onClick });
+        return new TodoList({ $target, initialState, onChange, onClick });
     }
 
     const $todoList = document.createElement('div');
@@ -20,38 +20,47 @@ export default function TodoList({ $target, initialState, onClick }) {
         $todoList.innerHTML = `
             <ul style="list-style:none;">
                 ${this.state.map(({ id, text, isCompleted }) => 
-                    `<li class="todos" completed=${isCompleted}>
-                        <input type="checkbox" id=${id} class="check">
-                        <label class="contents">${text}</label>
+                    `<li id=${id} class="todos" completed=${isCompleted}>
+                        <input type="checkbox" class="check">
+                        <label class="content">${text}</label>
+                        <button class="deleteButton">🗑</button>
                     </li>`)
                     .join('')
                 }
             </ul>
-        `;
+        `;        
 
-        //completed 상태에 따라 취소선 및 체크박스 스타일 설정
         document.querySelectorAll('.todos').forEach((todo) => {
-            const completed = todo.getAttribute('completed');
-            const $checkBox = todo.firstElementChild;
-            const $label = todo.lastElementChild;
-
-            if (completed === 'true') {
+            const $checkBox = todo.children[0];
+            const $label = todo.children[1];
+            const $deletButton = todo.children[2];
+            const todoId = parseInt(todo.id);
+            
+            if (todo.getAttribute('completed') === 'true') {
                 $checkBox.checked = true;
                 $label.style.textDecoration = 'line-through';
             } else {
                 $checkBox.checked = false;
                 $label.style.textDecoration = '';
             }
-        });
 
-        //checkbox 클릭이벤트
-        document.querySelectorAll('.check').forEach(check => {
-            const todoId = parseInt(check.getAttribute('id'));
+            $checkBox.addEventListener('change', (e) => {
+                onChange(todoId);
+            });
 
-            check.addEventListener('click', (e) => {
+            $deletButton.addEventListener('click', (e) => {
                 onClick(todoId);
             })
-        })
+        });
+        
+
+        // document.querySelectorAll('.check').forEach(check => {
+        //     const todoId = parseInt(check.getAttribute('id'));
+
+        //     check.addEventListener('click', (e) => {
+        //         onClick(todoId);
+        //     })
+        // })
     }
     
     this.render();

@@ -15,7 +15,7 @@ export default function TodoForm({ $target, onSubmit }) {
     this.render = () => {
         $form.innerHTML = `
             <input type="text" name="todo"/>
-            <button>추가</button>
+            <button id="addButton">+</button>
         `;
 
         //submit 이벤트
