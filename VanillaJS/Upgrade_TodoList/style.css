@@ -1,0 +1,63 @@
+.app {
+    width: 40%;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+form {
+    display: flex;
+    justify-content: center;
+    margin: 2% 0;
+}
+
+#addButton {
+    padding: 0;
+    margin: 0 1%;
+    width: 35px;
+    height: 35px;
+    line-height: 35px;
+    text-align: center;
+    background-color: #2962ff;
+    border: none;
+    border-radius: 50%;
+    color: #efefef;
+    cursor: pointer;
+    font-size: 2em;
+}
+
+input[name="todo"] {
+    width: 80%;
+    height: 21.2px;
+    font-size: 1.2em;
+    padding: 1%;
+}
+
+ul {
+    width: 100%;
+    display: flex;
+    align-content: flex-start;
+    padding: 0 2%;
+    flex-direction: column;
+    font-size: 1.2em;
+}
+
+li {
+    padding: 1%;
+}
+
+h1, h3 {
+    text-align: center;
+    margin: 10% 0;
+}
+
+h3 {
+    color: #2962ff;
+}
+
+.deleteButton {
+    background-color:transparent;
+    border: none;
+    cursor: pointer;
+}
