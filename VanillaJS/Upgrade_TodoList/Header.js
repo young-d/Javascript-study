@@ -1,7 +1,7 @@
 export default function Header({ $target, text }) {
     //new 연산자 없을 경우
     if (!(this instanceof Header)) {
-        console.erroe('There is no new operator');
+        console.error('There is no new operator');
         //new로 다시 생성해주기
         return new Header({ $target, text });
     }
