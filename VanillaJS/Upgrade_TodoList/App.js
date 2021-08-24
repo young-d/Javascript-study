@@ -5,8 +5,28 @@ import TodoCount from './TodoCount.js';
 import { setItem , getItem } from './storage.js';
 import { validateTextMaxLength, validateDuplication } from './validation.js';
 
-export default function App({ $target }) {
-    new Header({ 
+export default function App({ $target, initialState }) {
+    this.state = initialState;
+
+    this.setState = nextState => {
+        this.state = nextState;
+    }
+
+    //nextState로 업데이트해주는 함수
+    const setTodos = nextState => {
+        todoList.setState(nextState);
+        setItem('todos', JSON.stringify(nextState));
+        this.setState(nextState);
+    }
+
+    //완료된 todo 개수 카운팅하는 함수
+    const countCompletedTodo = () => {
+        this.state
+        .filter(todo => todo.isCompleted)
+        .length
+    }
+
+    Header({ 
         $target,
         text: 'Upgrade Todo list!' 
     });
@@ -14,7 +34,7 @@ export default function App({ $target }) {
     TodoForm({
         $target,
         onSubmit: (text) => {
-            const nextState = getItem('todos', []);
+            const nextState = this.state;
 
             //text 길이, 중복여부 체크
             if (validateTextMaxLength(text) 
@@ -25,12 +45,12 @@ export default function App({ $target }) {
                     text,
                     isCompleted: false
                 });
-                todoList.setState(nextState);
-                setItem('todos', JSON.stringify(nextState));
+                
+                setTodos(nextState);
                 
                 todoCount.setState({
                     completedCount: todoCount.state.completedCount,
-                    totalCount: getItem('todos', []).length
+                    totalCount: this.state.length
                 });
             }
         } 
@@ -38,36 +58,30 @@ export default function App({ $target }) {
 
     const todoList = TodoList({
         $target,
-        initialState: getItem('todos', []),
+        initialState: this.state,
         onChange: (id) => {
-            const nextState = getItem('todos', []).map(todo => {
+            const nextState = this.state.map(todo => {
                 if(todo.id === id) {
                     todo.isCompleted = !todo.isCompleted;
                 }
                 return todo;
             });
 
-            todoList.setState(nextState);
-            setItem('todos', JSON.stringify(nextState));
+            setTodos(nextState);
 
             todoCount.setState({
-                completedCount: nextState
-                                .filter(todo => todo.isCompleted)
-                                .length,
+                completedCount: countCompletedTodo(),
                 totalCount: todoCount.state.totalCount
             });
         },
         onClick: (id) => {
-            const nextState = getItem('todos', []).filter(todo => todo.id !== id);
+            const nextState = this.state.filter(todo => todo.id !== id);
 
-            todoList.setState(nextState);
-            setItem('todos', JSON.stringify(nextState));
+            setTodos(nextState);
 
             todoCount.setState({
-                completedCount: nextState
-                                .filter(todo => todo.isCompleted)
-                                .length,
-                totalCount: getItem('todos', []).length
+                completedCount: countCompletedTodo(),
+                totalCount: this.state.length
             });
         }
     });
@@ -75,10 +89,8 @@ export default function App({ $target }) {
     const todoCount = TodoCount({
         $target,
         initialState: {
-            completedCount: getItem('todos', [])
-                            .filter(todo => todo.isCompleted)
-                            .length,
-            totalCount: getItem('todos', []).length
+            completedCount: countCompletedTodo(),
+            totalCount: this.state.length
         }
     })
 }
