@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        //json
+        fetch('https://kdt.roto.codes/todos')
+            .then(res => {
+                console.log(res); //ReadableStream
+                return res.json(); //res는 그대로 쓸 수 없고, json으로 바꿔서 사용!
+            })
+            .then(data => {
+                console.log(data); //넘어온 res json
+            });
+
+        //blob
+        const imageURL = './image.png';
+        fetch(imageURL)
+            .then(res => {
+                // console.log(res.text()); //파일 데이터라서 텍스트로 찍으면 이상한(?) 문자들이 나온다
+                return res.blob(); //파일 형식을 알아서 인식해준다
+            })
+            .then(data => {
+                const url = URL.createObjectURL(data);
+
+                console.log(url); //받아온 데이터가 url 형식으로 표현된다.
+            });
+
+        //reject 상황 처리하기
+        fetch('http://127.0.0.1:5500/VanillaJS/fetchAPI/undefined-api')  //존재하지 않는 api 호출
+            .then(res => res.json())
+            //.then(res => { 
+                // if (res.ok) { //response의 ok가 true 일 때만 리턴 
+                //    return res.json();
+                // }
+                // throw new Error('요청이 처리되지 못함'); //아니라면 then으로 넘기지 않고, 에러를 던짐
+            //})
+            .then(result => {
+                console.log(result); 
+            })
+            .catch(e => {
+                document.querySelector('body').innerHTML = e.message;
+            });
+
+            //fetch에 옵션 주기
+            const header = new Headers();
+
+            headers.append('x-auth-token', 'TOKEN'); //인증토큰 넘길 때 header에 넣어서
+
+            fetch('https://kdt.roto.doces/product', {
+                method:'POST',
+                headers,
+                body: JSON.stringify(product)
+            });
+    </script>    
+</body>
+</html>
