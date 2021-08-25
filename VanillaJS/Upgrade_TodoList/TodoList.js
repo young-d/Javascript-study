@@ -12,13 +12,13 @@ export default function TodoList({ $target, initialState, onChange, onClick }) {
     this.state = initialState;
 
     this.setState = nextState => {
-        this.state = nextState ? nextState : this.state;
+        this.state = nextState;
         this.render();
     }
 
     this.render = () => {
         $todoList.innerHTML = `
-            <ul style="list-style:none;">
+            <ul>
                 ${this.state.map(({ id, text, isCompleted }) => 
                     `<li id=${id} class="todos" completed=${isCompleted}>
                         <input type="checkbox" class="check">
