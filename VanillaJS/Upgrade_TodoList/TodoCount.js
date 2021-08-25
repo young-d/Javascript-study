@@ -17,7 +17,7 @@ export default function TodoCount({ $target, initialState }) {
     }
 
     this.render = () => {
-        $todoCount.textContent = `Done: ${this.state.completedCount} / Todo: ${this.state.totalCount}`;
+        $todoCount.textContent = `Done: ${this.state.completedCount || 0} / Todo: ${this.state.totalCount || 0}`;
     }
 
     this.render();
