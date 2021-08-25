@@ -49,8 +49,11 @@ export default function ProductPage({ $target, initialState }) {
             basePrice: 0,
             selectedOptions: []  //빈 배열일 때는 reduce로 돌릴 수 없으니 방어코드 짜주어야 함
         },
-        onRemove: () => {
-
+        onRemove: (selectedOptionIndex) => {
+            const nextState = {...this.state}
+            nextState.selectedOptions.splice(selectedOptionIndex, 1)
+            
+            this.setState(nextState);
         }
     })
 
