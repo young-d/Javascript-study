@@ -36,8 +36,6 @@ export default function ProductOptions({ $target, initialState, onSelect }) {
 
         const option = this.state.find(option => option.optionId === optionId);
 
-        console.log(option);
-
         if (option) {
             onSelect(option);
         }
