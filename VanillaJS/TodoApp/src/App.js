@@ -6,34 +6,54 @@ import { request } from "./api.js";
 export default function App({ $target }) {
     this.state = {
         username: 'roto',
-        todos: []
+        todos: [],
+        isTodoLoading: false
     }
 
-    new Header({
+    const header = new Header({
         $target,
-        initialState: this.state.username
+        initialState: {
+            username: this.state.username,
+            isLoading: this.state.isTodoLoading
+        }
     })
 
     new TodoForm({
         $target,
         onSubmit: async (content) => {
-            await request(`/${this.state.username}`, {
+            const todo = {
+                content,
+                inCompleted: false
+            }
+
+            // 낙관적 업데이트
+            this.setState({
+                ...this.state,
+                todos: [
+                    ...this.state.todos,
+                    todo
+                ]
+            })
+
+            await request(`/${this.state.username}?delay=3000`, {
                 method: 'POST',
-                body: JSON.stringify({
-                    content, 
-                    isCompleted: false
-                })
+                body: JSON.stringify(todo)
             });
 
-            await fetchTodo();
+            await fetchTodos();
         }
     })
 
     this.setState = nextState => {
         this.state = nextState;
+
+        header.setState({
+            username: this.state.username,
+            isLoading: this.state.isTodoLoading
+        })
         
         todoList.setState({
-            isTodoLoading: this.state.isTodoLoading,
+            isLoading: this.state.isTodoLoading,
             todos: this.state.todos
         });
     };
@@ -41,18 +61,46 @@ export default function App({ $target }) {
     const todoList = new TodoList({
         $target,
         initialState: {
-            isTodoLoading: this.state.isTodoLoading,
+            isLoading: this.state.isTodoLoading,
             todos: this.state.todos
         },
-        onToggle: (id) => {
-            alert(`${id} 토글 예정`);
+        onToggle: async (id) => {
+            //낙관적 업데이트
+            const todoIndex = this.state.todos.findIndex(todo => todo._id === id);
+            const nextTodos = [...this.state.todos];
+
+            nextTodos[todoIndex].isCompleted = !nextTodos[todoIndex].inCompleted;
+            this.setState({
+                ...this.state,
+                todos: nextTodos
+            })
+
+            await request(`/${this.state.username}/${id}/toggle`, {
+                method: 'PUT'
+            })
+
+            await fetchTodos();
         },
-        onRemove: (id) => {
-            alert(`${id} 삭제 예정`);
+        onRemove: async (id) => {
+            //낙관적 업데이트
+            const todoIndex = this.state.todos.findIndex(todo => todo._id === id);
+            const nextTodos = [...this.state.todos];
+
+            nextTodos.splice(todoIndex, 1);
+
+            this.setState({
+                ...this.state,
+                todos: nextTodos
+            })
+
+            await request(`/${this.state.username}/${id}`, {
+                method: 'DELETE'
+            })
+            await fetchTodos();
         }
     });   
 
-    const fetchTodo = async () => {
+    const fetchTodos = async () => {
         const { username } = this.state;
 
         if (this.state.username) {
@@ -61,7 +109,7 @@ export default function App({ $target }) {
                 isTodoLoading: true
             });
 
-            const todos = await request(`/${username}?delay=5000`);
+            const todos = await request(`/${username}`);
 
             this.setState({
                 ...this.state,
@@ -71,5 +119,5 @@ export default function App({ $target }) {
         }
     }
 
-    fetchTodo();
+    fetchTodos();
 }
