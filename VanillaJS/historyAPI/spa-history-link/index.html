@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    <nav>
+        <a class="link" href="/">Home</a>
+    </nav>
+    <nav>
+        <a class="link" href="/list">List</a>
+    </nav>
+    <script>
+        window.addEventListener('click', e => {
+            if (e.target.className === 'link') {
+                e.preventDefault();
+                history.pushState(null, null, e.target.href);
+            }
+        })
+    </script>
+
+</body>
+</html>
