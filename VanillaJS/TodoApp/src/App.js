@@ -1,26 +1,72 @@
 import Header from "./Header.js";
+import UserList from "./UserList.js";
 import TodoForm from "./TodoForm.js";
 import TodoList from "./TodoList.js";
 import { request } from "./api.js";
 
 export default function App({ $target }) {
+    const $userListContainer = document.createElement('div');
+    const $todoListContainer = document.createElement('div');
+
+    $target.append($userListContainer);
+    $target.append($todoListContainer);
+    
     this.state = {
-        username: 'roto',
+        userList: [],
+        selectedUsername: null,
         todos: [],
         isTodoLoading: false
     }
 
+    this.setState = nextState => {
+        this.state = nextState;
+
+        header.setState({
+            selectedUsername: this.state.selectedUsername,
+            isLoading: this.state.isTodoLoading
+        })
+        
+        todoList.setState({
+            isLoading: this.state.isTodoLoading,
+            todos: this.state.todos
+        });
+
+        userList.setState(this.state.userList)
+
+        this.render();
+    };
+
+    this.render = () => {
+        const { selectedUsername } = this.state;
+        $todoListContainer.style.display = selectedUsername ? 'block' : 'none';
+    }
+
+    const userList = new UserList({
+        $target: $userListContainer,
+        initialState: this.state.userList,
+        onSelect: async (username) => {
+            this.setState({
+                ...this.state,
+                selectedUsername: username
+            })
+
+            await fetchTodos();
+        }
+    })
+
     const header = new Header({
-        $target,
+        $target: $todoListContainer,
         initialState: {
-            username: this.state.username,
+            selectedUsername: this.state.selectedUsername,
             isLoading: this.state.isTodoLoading
         }
     })
 
     new TodoForm({
-        $target,
+        $target: $todoListContainer,
         onSubmit: async (content) => {
+            const isFirstTodoAdd = this.state.todos.length === 0;
+            
             const todo = {
                 content,
                 inCompleted: false
@@ -34,32 +80,22 @@ export default function App({ $target }) {
                     todo
                 ]
             })
-
-            await request(`/${this.state.username}?delay=3000`, {
+             
+            await request(`/${this.state.selectedUsername}`, {
                 method: 'POST',
                 body: JSON.stringify(todo)
             });
 
             await fetchTodos();
+
+            if (isFirstTodoAdd) {
+                await fetchUserList();
+            }
         }
     })
-
-    this.setState = nextState => {
-        this.state = nextState;
-
-        header.setState({
-            username: this.state.username,
-            isLoading: this.state.isTodoLoading
-        })
-        
-        todoList.setState({
-            isLoading: this.state.isTodoLoading,
-            todos: this.state.todos
-        });
-    };
     
     const todoList = new TodoList({
-        $target,
+        $target: $todoListContainer,
         initialState: {
             isLoading: this.state.isTodoLoading,
             todos: this.state.todos
@@ -75,7 +111,7 @@ export default function App({ $target }) {
                 todos: nextTodos
             })
 
-            await request(`/${this.state.username}/${id}/toggle`, {
+            await request(`/${this.state.selectedUsername}/${id}/toggle`, {
                 method: 'PUT'
             })
 
@@ -93,23 +129,34 @@ export default function App({ $target }) {
                 todos: nextTodos
             })
 
-            await request(`/${this.state.username}/${id}`, {
+            await request(`/${this.state.selectedUsername}/${id}`, {
                 method: 'DELETE'
             })
             await fetchTodos();
         }
     });   
 
-    const fetchTodos = async () => {
-        const { username } = this.state;
+    //UserList를 api 연동하기
+    const fetchUserList = async () => {
+        const userList = await request('/users');
 
-        if (this.state.username) {
+        this.setState({
+            ...this.state,
+            userList
+        });
+    }
+
+    //TodoList를 api 연동하기
+    const fetchTodos = async () => {
+        const { selectedUsername } = this.state;
+
+        if (this.state.selectedUsername) {
             this.setState({ 
                 ...this.state,
                 isTodoLoading: true
             });
 
-            const todos = await request(`/${username}`);
+            const todos = await request(`/${selectedUsername}`);
 
             this.setState({
                 ...this.state,
@@ -119,5 +166,9 @@ export default function App({ $target }) {
         }
     }
 
-    fetchTodos();
+    const init = async () => {
+        await fetchUserList();
+    }
+
+    init();
 }

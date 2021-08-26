@@ -1,3 +1,8 @@
+import { setItem, getItem, removeItem } from "./storage.js";
+
+//로컬 스토리지 키값
+const TODO_TEMP_SAVE_KEY = 'TODO_TEMP_SAVE_KEY';
+
 export default function TodoForm({ $target, onSubmit }) {
     const $form = document.createElement('form');
 
@@ -19,8 +24,18 @@ export default function TodoForm({ $target, onSubmit }) {
         const content = $input.value;
 
         onSubmit(content);
+
         $input.value = '';
+        removeItem(TODO_TEMP_SAVE_KEY);
     });
 
     this.render();
+
+    //input에 값이 바뀔때마다 로컬 스토리지 값을 넣어준다
+    const $input = $form.querySelector('input');
+    $input.value = getItem(TODO_TEMP_SAVE_KEY, '');
+
+    $input.addEventListener('keyup', (e) => {
+        setItem(TODO_TEMP_SAVE_KEY, e.target.value);
+    })
 }
