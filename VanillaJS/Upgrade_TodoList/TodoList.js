@@ -20,9 +20,9 @@ export default function TodoList({ $target, initialState, onChange, onClick }) {
         $todoList.innerHTML = `
             <ul>
                 ${this.state.map(({ id, text, isCompleted }) => 
-                    `<li id=${id} class="todos" completed=${isCompleted}>
-                        <input type="checkbox" class="check">
-                        <label class="content">${text}</label>
+                    `<li data-id=${id} class="todos">
+                        <input type="checkbox" ${isCompleted ? 'checked' : ''}>
+                        <label style="text-decoration: ${isCompleted ?  "line-through" : ''};">${text}</label>
                         <button class="deleteButton">🗑</button>
                     </li>`)
                     .join('')
@@ -31,25 +31,16 @@ export default function TodoList({ $target, initialState, onChange, onClick }) {
         `;        
 
         document.querySelectorAll('.todos').forEach((todo) => {
-            const $checkBox = todo.children[0];
-            const $label = todo.children[1];
-            const $deletButton = todo.children[2];
-            const todoId = parseInt(todo.id);
-            
-            if (todo.getAttribute('completed') === 'true') {
-                $checkBox.checked = true;
-                $label.style.textDecoration = 'line-through';
-            } else {
-                $checkBox.checked = false;
-                $label.style.textDecoration = '';
-            }
+            const { id } = todo.dataset;
+            const $checkBox = todo.firstElementChild;
+            const $deleteButton = todo.lastElementChild;
 
             $checkBox.addEventListener('change', (e) => {
-                onChange(todoId);
+                onChange(parseInt(id));
             });
 
-            $deletButton.addEventListener('click', (e) => {
-                onClick(todoId);
+            $deleteButton.addEventListener('click', (e) => {
+                onClick(parseInt(id));
             })
         });
     }
