@@ -1,6 +1,7 @@
 import Editor from "./Editor.js";
 import { setItem, getItem, removeItem } from "./storage.js";
 import { request } from "./api.js";
+import LinkButton from "./LinkButton.js";
 
 export default function PostEditPage({ $target, initialState }) {
     const $page = document.createElement('div');
@@ -36,9 +37,9 @@ export default function PostEditPage({ $target, initialState }) {
                     tempSaveData: new Date()
                 })
 
-                //에디팅한 포스트가 새 글일 경우 DB에 추가해주기
                 const isNew = this.state.postId === 'new';
                 if (isNew) {
+                    //에디팅한 포스트가 새 글일 경우 DB에 추가해주기
                     const createdPost = await request('/posts', {
                         method: 'POST',
                         body: JSON.stringify(post)
@@ -48,7 +49,12 @@ export default function PostEditPage({ $target, initialState }) {
                     history.replaceState(null, null, `/posts/${createdPost.id}`);
                     //저장이 성공한 경우 로컬스토리지에 있던 값 지워주기
                     removeItem(postLocalSaveKey);
+                    //무한증식 버그 방지
+                    this.setState({
+                        postId: createdPost.id
+                    })
                 } else {
+                    //새글이 아니면 DB에서 수정으로 반영해주고 로컬스토리지 비워주기 
                     await request(`/posts/${post.id}`, {
                         method: 'PUT',
                         body: JSON.stringify(post)
@@ -65,12 +71,22 @@ export default function PostEditPage({ $target, initialState }) {
             postLocalSaveKey = `temp-post-${nextState.postId}`;
 
             this.state = nextState;
-            await fetchPost(); 
+
+            //post가 new인 경우 예외 처리
+            if (this.state.postId === 'new') {
+                const post = getItem(postLocalSaveKey, {
+                    title: '',
+                    content: ''
+                })
+                this.render();
+                editor.setState(post);
+            } else {
+                await fetchPost(); 
+            }
             return;
         }
 
         this.state = nextState;
-
         this.render();
 
         editor.setState(this.state.post
@@ -117,4 +133,20 @@ export default function PostEditPage({ $target, initialState }) {
             })
         }
     }
+    
+    //버튼 이벤트
+    new LinkButton({
+        $target: $page,
+        initialState: {
+            text: '목록으로 이동',
+            link: '/'
+        }
+    });
+    // const $moveListButton = document.createElement('button');
+    // $moveListButton.innerText = '목록으로';
+    // $page.appendChild($moveListButton);
+
+    // $moveListButton.addEventListener('click', () => {
+    //     push('/');
+    // })
 }

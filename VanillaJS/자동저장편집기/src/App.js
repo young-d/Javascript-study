@@ -1,5 +1,6 @@
-import PostsPage from "./PostPage.js";
+import PostsPage from "./PostsPage.js";
 import PostEditPage from "./PostEditPage.js";
+import { initRouter } from "./router.js";
 
 /* url 규칙
 * 루트: postsPage 그리기
@@ -9,14 +10,12 @@ import PostEditPage from "./PostEditPage.js";
 
 export default function App ({ $target }) {
     const postsPage = new PostsPage({ 
-        $target,
-        onPostClick: (id) => {
-            history.pushState(null, null, `/posts/${id}`);
-            this.route();
-        }
+        $target
     })
+
     const postEditPage = new PostEditPage({ 
-        $target, initialState: {
+        $target,
+        initialState: {
             postId: 'new',
             post: {
               title: '',
@@ -26,17 +25,18 @@ export default function App ({ $target }) {
     })
 
     this.route = () => {
+      $target.innerHTML = '';
         const { pathname } = window.location
 
         if (pathname === '/') {
-          postsPage.render()
+            postsPage.render()
         } else if (pathname.indexOf('/posts/') === 0 ) {
-          const [, , postId] = pathname.split('/')
-          postEditPage.setState({ postId })
+            const [, , postId] = pathname.split('/')
+            postEditPage.setState({ postId })
         }
     }
 
-    this.route()
+    this.route();
 
-    
+    initRouter(() => this.route());
 }
