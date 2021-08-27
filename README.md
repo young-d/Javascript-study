@@ -1,3 +1,3 @@
-# 제목
+# Study Note
+dev-course 강의 코드 정리
 
-안내용
