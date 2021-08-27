@@ -1,13 +1,13 @@
 import PostList from "./PostList.js";
 import { request } from "./api.js";
 
-export default function PostPage({ $target }) {
+export default function PostPage({ $target, onPostClick }) {
     const $page = document.createElement('div');
 
     const postList = new PostList({
-        $target,
+        $target: $page,
         initialState: [],
-        onPostClick: () => {}
+        onPostClick
     })
 
     const $newPostButton = document.createElement('button');
