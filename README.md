@@ -1,3 +1,3 @@
 # Study Note
-dev-course 강의 코드 정리
+JS 공부 기록입니다.
 
