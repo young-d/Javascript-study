@@ -33,7 +33,6 @@ export default function UserList({ $target, initialState, onSelect }) {
 
         if ($li) {
             const { username } = $li.dataset;
-
             onSelect(username);
         }
     })

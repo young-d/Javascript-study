@@ -3,6 +3,7 @@ import UserList from "./UserList.js";
 import TodoForm from "./TodoForm.js";
 import TodoList from "./TodoList.js";
 import { request } from "./api.js";
+import { parse } from "./qeurystring.js";
 
 export default function App({ $target }) {
     const $userListContainer = document.createElement('div');
@@ -45,6 +46,8 @@ export default function App({ $target }) {
         $target: $userListContainer,
         initialState: this.state.userList,
         onSelect: async (username) => {
+            history.pushState(null, null, `/?selectedUsername=${username}`);
+
             this.setState({
                 ...this.state,
                 selectedUsername: username
@@ -167,8 +170,33 @@ export default function App({ $target }) {
     }
 
     const init = async () => {
+        
+
+        //url에 특정사용자를 나타내는 값이 있을 경우
+        const { search } = location;
+        
+        if (search.length > 0) {
+            const { selectedUsername } = parse(search.substring(1));
+            
+            if (selectedUsername) {
+                this.setState({
+                    ...this.state,
+                    selectedUsername
+                })
+                await fetchTodos();
+            }
+        }
+
         await fetchUserList();
+
     }
 
+    this.render();
     init();
+
+    //history가 변할 때마다 초기화(뒤로가기, 앞으로 가기)
+    window.addEventListener('popstate', () => {
+        init();
+    })
+
 }

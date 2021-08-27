@@ -13,8 +13,10 @@ export default function TodoList({ $target, initialState, onToggle, onRemove }) 
     this.render = () => {
         const { isLoading, todos } = this.state;
 
+        //로딩 중일 때/목록이 없을 때 처리
         if (!isLoading && todos.length === 0) {
             $todo.innerHTML = 'Todo가 없어요!';
+            return;
         }
 
         $todo.innerHTML = /* html */ `
