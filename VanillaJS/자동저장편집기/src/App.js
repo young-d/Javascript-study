@@ -24,12 +24,13 @@ export default function App ({ $target }) {
         }
     })
 
+    //라우팅 처리
     this.route = () => {
       $target.innerHTML = '';
         const { pathname } = window.location
 
         if (pathname === '/') {
-            postsPage.render()
+            postsPage.setState();
         } else if (pathname.indexOf('/posts/') === 0 ) {
             const [, , postId] = pathname.split('/')
             postEditPage.setState({ postId })

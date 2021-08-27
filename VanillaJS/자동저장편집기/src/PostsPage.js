@@ -26,15 +26,15 @@ export default function PostPage({ $target }) {
     // $newPostButton.addEventListener('click', () => {
     //     push(`/posts/new`);
     // });
-    
-    const fetchPosts = async () => {
+
+    //this.setState로 lsit 데이터 업데이트해주기 (렌더링할 때말고) -> EditPage와 일관성 맞추기 위해서
+    this.setState = async () => {
         const posts = await request('/posts');
-    
         postList.setState(posts);
+        this.render();
     }
 
-    this.render = async () => {
-        await fetchPosts();
+    this.render = () => {
         $target.appendChild($page);
     }
 }
