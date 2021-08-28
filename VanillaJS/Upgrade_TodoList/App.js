@@ -21,7 +21,7 @@ export default function App({ $target, initialState }) {
 
     Header({ 
         $target,
-        text: 'Upgrade Todo list!' 
+        text: '✍️ Record Your Todo' 
     });
 
     TodoForm({

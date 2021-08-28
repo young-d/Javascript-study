@@ -14,7 +14,7 @@ export default function TodoForm({ $target, onSubmit }) {
 
     this.render = () => {
         $form.innerHTML = `
-            <input type="text" name="todo"/>
+            <input type="text" name="todo" autoComplete="off"/>
             <button id="addButton">+</button>
         `;
 
