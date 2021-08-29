@@ -1,8 +1,8 @@
+import { isInstance } from "./instance.js";
+
 export default function TodoForm({ $target, onSubmit }) {
     //new 연산자 없을 경우
-    if (!(this instanceof TodoForm)) {
-        console.error('There is no new operator');
-        //new로 다시 생성해주기
+    if (!isInstance(this, TodoForm)) {
         return new TodoForm({ $target, onSubmit });
     }
     

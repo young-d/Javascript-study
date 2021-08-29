@@ -1,8 +1,8 @@
+import { isInstance } from "./instance.js";
+
 export default function Header({ $target, text }) {
     //new 연산자 없을 경우
-    if (!(this instanceof Header)) {
-        console.error('There is no new operator');
-        //new로 다시 생성해주기
+    if (!isInstance(this, Header)) {
         return new Header({ $target, text });
     }
 

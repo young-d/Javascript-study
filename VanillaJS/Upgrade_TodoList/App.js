@@ -6,10 +6,12 @@ import { setItem } from './storage.js';
 import { validateTextMaxLength, validateDuplication } from './validation.js';
 
 export default function App({ $target, initialState }) {
-    this.state = initialState;
+    this.state = {
+        todos: initialState
+    };
 
     this.setState = nextState => {
-        this.state = nextState;
+        this.state.todos = nextState;
         todoList.setState(nextState);
         todoCount.setState({
             completedCount: nextState
@@ -17,7 +19,9 @@ export default function App({ $target, initialState }) {
                             .length,
             totalCount: nextState.length
         })
-    }
+
+        setItem('todos', JSON.stringify(nextState));
+    };
 
     Header({ 
         $target,
@@ -27,7 +31,7 @@ export default function App({ $target, initialState }) {
     TodoForm({
         $target,
         onSubmit: (text) => {
-            const nextState = this.state;
+            const nextState = this.state.todos;
 
             //text 길이, 중복여부 체크
             if (validateTextMaxLength(text) 
@@ -39,8 +43,6 @@ export default function App({ $target, initialState }) {
                     isCompleted: false
                 });
 
-                setItem('todos', JSON.stringify(nextState));
-
                 this.setState(nextState);
             }
         } 
@@ -48,23 +50,19 @@ export default function App({ $target, initialState }) {
 
     const todoList = TodoList({
         $target,
-        initialState: this.state,
-        onChange: (id) => {
-            const nextState = this.state.map(todo => {
+        initialState: this.state.todos,
+        onToggleCompleted: (id) => {
+            const nextState = this.state.todos.map(todo => {
                 if(todo.id === id) {
                     todo.isCompleted = !todo.isCompleted;
                 }
                 return todo;
             });
 
-            setItem('todos', JSON.stringify(nextState));
-
             this.setState(nextState);
         },
-        onClick: (id) => {
-            const nextState = this.state.filter(todo => todo.id !== id);
-
-            setItem('todos', JSON.stringify(nextState));
+        onRemoveTodo: (id) => {
+            const nextState = this.state.todos.filter(todo => todo.id !== id);
 
             this.setState(nextState);
         }
@@ -73,10 +71,10 @@ export default function App({ $target, initialState }) {
     const todoCount = TodoCount({
         $target,
         initialState: {
-            completedCount: this.state
+            completedCount: this.state.todos
                             .filter(todo => todo.isCompleted)
                             .length,
-            totalCount: this.state.length
+            totalCount: this.state.todos.length
         }
     })
 }

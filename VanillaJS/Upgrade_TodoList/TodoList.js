@@ -1,9 +1,9 @@
-export default function TodoList({ $target, initialState, onChange, onClick }) {
+import { isInstance } from "./instance.js";
+
+export default function TodoList({ $target, initialState, onToggleCompleted, onRemoveTodo }) {
     //new 연산자 없을 경우
-    if (!(this instanceof TodoList)) {
-        console.error('There is no new operator');
-        //new로 다시 생성해주기
-        return new TodoList({ $target, initialState, onChange, onClick });
+    if (!isInstance(this, TodoList)) {
+        return new TodoList({ $target, initialState, onToggleCompleted, onRemoveTodo });
     }
 
     const $todoList = document.createElement('div');
@@ -21,9 +21,9 @@ export default function TodoList({ $target, initialState, onChange, onClick }) {
             <ul>
                 ${this.state.map(({ id, text, isCompleted }) => 
                     `<li data-id=${id} class="todos">
-                        <input type="checkbox" ${isCompleted ? 'checked' : ''}>
+                        <input type="checkbox" class="checkbox" ${isCompleted ? 'checked' : ''}>
                         <label style="text-decoration: ${isCompleted ?  "line-through" : ''};">${text}</label>
-                        <button class="deleteButton">🗑</button>
+                        <button class="deletebutton">🗑</button>
                     </li>`)
                     .join('')
                 }
@@ -32,15 +32,15 @@ export default function TodoList({ $target, initialState, onChange, onClick }) {
 
         document.querySelectorAll('.todos').forEach((todo) => {
             const { id } = todo.dataset;
-            const $checkBox = todo.firstElementChild;
-            const $deleteButton = todo.lastElementChild;
+            const $checkBox = todo.getElementsByClassName('checkbox').item(0);
+            const $deleteButton = todo.getElementsByClassName('deletebutton').item(0);
 
             $checkBox.addEventListener('change', (e) => {
-                onChange(parseInt(id));
+                onToggleCompleted(parseInt(id));
             });
 
             $deleteButton.addEventListener('click', (e) => {
-                onClick(parseInt(id));
+                onRemoveTodo(parseInt(id));
             })
         });
     }
