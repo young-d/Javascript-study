@@ -4,11 +4,10 @@ import TodoList from './TodoList.js';
 import TodoCount from './TodoCount.js';
 import { setItem } from './storage.js';
 import { validateTextMaxLength, validateDuplication } from './validation.js';
+import { TODO_LIST_KEY_NAME, TITLE_TEXT } from './constant.js';
 
 export default function App({ $target, initialState }) {
-    this.state = {
-        todos: initialState
-    };
+    this.state = initialState;
 
     this.setState = nextState => {
         this.state.todos = nextState;
@@ -20,12 +19,14 @@ export default function App({ $target, initialState }) {
             totalCount: nextState.length
         })
 
-        setItem('todos', JSON.stringify(nextState));
+        setItem(TODO_LIST_KEY_NAME, JSON.stringify(nextState));
     };
 
     Header({ 
         $target,
-        text: '✍️ Record Your Todo' 
+        initialState: {
+            title: TITLE_TEXT
+        }
     });
 
     TodoForm({

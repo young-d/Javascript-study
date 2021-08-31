@@ -1,2 +1,0 @@
-# preview
-![](https://s3.us-west-2.amazonaws.com/secure.notion-static.com/9117ed8c-c77f-459f-b371-2385313088f1/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAT73L2G45O3KS52Y5%2F20210823%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20210823T082555Z&X-Amz-Expires=86400&X-Amz-Signature=62a1bd4c09aff4d7a725ec2f221057a1a635964c2662d31f41edb5588c1aac1e&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22Untitled.png%22)
