@@ -10,6 +10,7 @@ export default function PhotoList({ $target, initialState, onScrollEnded }) {
         this.render();
     }
 
+    //ul은 초기에 한 번멘 렌더링되고 이후에는 li만 추가로 append
     let isInitialize = false;
 
     this.render = () => {
@@ -22,11 +23,13 @@ export default function PhotoList({ $target, initialState, onScrollEnded }) {
             isInitialize = true;
         }
 
-        const $photos = $photoList.querySelector('.PhotoList__photos')
+        const $photos = $photoList.querySelector('.PhotoList__photos');
+        const { photos, isLoading } = this.state;
 
-        this.state.forEach(photo => {
+        photos.forEach(photo => {
             //photo의 id 기준으로 렌더링이 되어있는지 체크
-            if ($photos.querySelector(`li[data-id="${photo.id}"]`) === null) {
+            //loading 중이 아닐 때만 append
+            if ($photos.querySelector(`li[data-id="${photo.id}"]`) === null && !isLoading) {
                 //없으면 li 생성하고 $photos에 appendChild
                 const $li = document.createElement('li');
                 $li.setAttribute('data-id', photo.id);
