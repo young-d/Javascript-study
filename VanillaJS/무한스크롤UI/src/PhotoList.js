@@ -46,5 +46,16 @@ export default function PhotoList({ $target, initialState, onScrollEnded }) {
         if (e.target.className == 'PhotoList__loadMore') {
             onScrollEnded();
         }
-    })
+    });
+
+    //스크롤 이벤트
+    window.addEventListener('scroll', () => {
+        const { totalCount, photos, isLoading } = this.state;
+        const isScrollEnded = (window.innerHeight + window.scrollY) + 100 >= document.body.offsetHeight;
+
+        //로딩 중 또는 컨텐츠를 전부 불러왔을 때(더 요청할 데이터가 없을 경우)는 더 이상 스크롤 이벤트를 발생시키지 않도록 처리
+        if (isScrollEnded && !isLoading && photos.length < totalCount) {
+            onScrollEnded();
+        }
+    });
 }
