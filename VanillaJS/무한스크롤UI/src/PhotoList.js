@@ -4,20 +4,37 @@ export default function PhotoList({ $target, initialState, onScrollEnded }) {
     $target.appendChild($photoList);
 
     this.state = initialState;
-
+    
     this.setState = nextState => {
         this.state = nextState;
         this.render();
     }
+    
+    //observer
+    const observer = new IntersectionObserver(entries => {
+        const { totalCount, isLoading, photos } = this.state;
+
+        entries.forEach(entry => {
+            if (entry.isIntersecting && !isLoading && photos.length < totalCount) {
+                console.log('화면 끝!!', entry);
+                onScrollEnded();
+            }
+        })
+    }, {
+        //root: null
+        rottMargin: '200px 200px 200px 200px',
+        threshold: 0.5 //해당 emenent가 뷰포트에 완전히 들어올 경우에만 감지되도록하려면 1로 주기
+    });
 
     //ul은 초기에 한 번멘 렌더링되고 이후에는 li만 추가로 append
     let isInitialize = false;
+
+    let $lastLi = null;
 
     this.render = () => {
         if (!isInitialize) {
             $photoList.innerHTML = `
                 <ul class="PhotoList__photos" style="list-style: none; padding: 0;"></ul>
-                <button class="PhotoList__loadMore" style="width: 100%; height: 100px; font-size: 20px;">loadMore</button> 
             `;
 
             isInitialize = true;
@@ -33,29 +50,26 @@ export default function PhotoList({ $target, initialState, onScrollEnded }) {
                 //없으면 li 생성하고 $photos에 appendChild
                 const $li = document.createElement('li');
                 $li.setAttribute('data-id', photo.id);
+                // $li.style = "min-height: 800px;";
                 $li.innerHTML = `<img width="100%" src="${photo.imagePath}" />`;
 
                 $photos.appendChild($li);
             }
         })
+
+        //observer가 감시할 대상(entry) 지정    
+        const $nextLi = $photos.querySelector('li:last-child');
+    
+        if ($nextLi !== null) {
+            //이전 감시 대상 지워주기
+            if ($lastLi !== null) {
+                observer.unobserve($lastLi);
+            }
+    
+            $lastLi = $nextLi;
+            observer.observe($lastLi);
+        }
     }
-
+    
     this.render();
-
-    $photoList.addEventListener('click', e => {
-        if (e.target.className == 'PhotoList__loadMore') {
-            onScrollEnded();
-        }
-    });
-
-    //스크롤 이벤트
-    window.addEventListener('scroll', () => {
-        const { totalCount, photos, isLoading } = this.state;
-        const isScrollEnded = (window.innerHeight + window.scrollY) + 100 >= document.body.offsetHeight;
-
-        //로딩 중 또는 컨텐츠를 전부 불러왔을 때(더 요청할 데이터가 없을 경우)는 더 이상 스크롤 이벤트를 발생시키지 않도록 처리
-        if (isScrollEnded && !isLoading && photos.length < totalCount) {
-            onScrollEnded();
-        }
-    });
 }
