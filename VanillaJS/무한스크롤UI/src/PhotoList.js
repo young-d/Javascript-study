@@ -16,20 +16,16 @@ export default function PhotoList({ $target, initialState, onScrollEnded }) {
 
         entries.forEach(entry => {
             if (entry.isIntersecting && !isLoading && photos.length < totalCount) {
-                console.log('화면 끝!!', entry);
+                observer.unobserve(entry.target); //기존 감시대상 해제
                 onScrollEnded();
             }
         })
     }, {
-        //root: null
-        rottMargin: '200px 200px 200px 200px',
         threshold: 0.5 //해당 emenent가 뷰포트에 완전히 들어올 경우에만 감지되도록하려면 1로 주기
     });
 
     //ul은 초기에 한 번멘 렌더링되고 이후에는 li만 추가로 append
     let isInitialize = false;
-
-    let $lastLi = null;
 
     this.render = () => {
         if (!isInitialize) {
@@ -57,16 +53,10 @@ export default function PhotoList({ $target, initialState, onScrollEnded }) {
             }
         })
 
-        //observer가 감시할 대상(entry) 지정    
-        const $nextLi = $photos.querySelector('li:last-child');
+        //observer가 감시할 대상(entry) 등록    
+        const $lastLi = $photos.querySelector('li:last-child');
     
-        if ($nextLi !== null) {
-            //이전 감시 대상 지워주기
-            if ($lastLi !== null) {
-                observer.unobserve($lastLi);
-            }
-    
-            $lastLi = $nextLi;
+        if ($lastLi !== null) {
             observer.observe($lastLi);
         }
     }
