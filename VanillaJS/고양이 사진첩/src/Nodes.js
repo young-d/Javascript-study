@@ -40,7 +40,8 @@ export default function Nodes({ $target, initialState, onPrevClick, onClick }) {
 
         //id가 없는 경우는?
         if (!id) {
-            //뒤로가기 누른 상태 처리
+            //뒤로가기(<) 클릭 처리
+            onPrevClick();
         }
 
         const node = this.state.nodes.find(node => node.id === id);
@@ -49,7 +50,7 @@ export default function Nodes({ $target, initialState, onPrevClick, onClick }) {
         if (node) {
             onClick(node);
         } else {
-            alert('올바르지 않은 Node입니다.');
+            onPrevClick();
         }
     })
 }

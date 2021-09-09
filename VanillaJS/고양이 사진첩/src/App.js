@@ -6,7 +6,8 @@ export default function App({ $target }) {
 
     this.state = {
         isRoot: true,
-        nodes: []
+        nodes: [],
+        paths: []
     }
 
     const nodes = new Nodes({
@@ -14,12 +15,33 @@ export default function App({ $target }) {
         initialState: {
             isRoot: this.state.isRoot,
             nodes: this.state.nodes,
-            selectedImageUrl: null
+            selectedImageUrl: null,
+            paths: this.state.paths
         },
-        onPrevClick: () => {},
+        onPrevClick: async () => {
+            const nextPaths = [...this.state.paths];
+            nextPaths.pop();
+            this.setState({
+                ...this.state,
+                paths: nextPaths
+            })
+
+            const { paths } = this.state;
+
+            if (paths.length === 0) {
+                await fetchNodes();
+            } else {
+                await fetchNodes(paths[paths.length - 1].id);
+            }
+        },
         onClick: async (node) => {
             if (node.type === 'DIRECTORY') {
                 await fetchNodes(node.id);
+                
+                this.setState({
+                    ...this.state,
+                    paths: [...this.state.paths, node]
+                })
             }
 
             if (node.type === 'FILE') {
