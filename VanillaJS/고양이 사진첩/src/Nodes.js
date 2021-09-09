@@ -1,4 +1,4 @@
-export default function Nodes({ $target, initialState, onPrevClick, onCLick }) {
+export default function Nodes({ $target, initialState, onPrevClick, onClick }) {
     const $nodes = document.createElement('div');
     $target.appendChild($nodes);
     $nodes.classList.add('Nodes');
@@ -32,4 +32,24 @@ export default function Nodes({ $target, initialState, onPrevClick, onCLick }) {
     }
 
     this.render();
+
+    $nodes.addEventListener('click', e => {
+        const $node = e.target.closest('.Node');
+
+        const { id } = $node.dataset;
+
+        //id가 없는 경우는?
+        if (!id) {
+            //뒤로가기 누른 상태 처리
+        }
+
+        const node = this.state.nodes.find(node => node.id === id);
+
+        //방어코드
+        if (node) {
+            onClick(node);
+        } else {
+            alert('올바르지 않은 Node입니다.');
+        }
+    })
 }

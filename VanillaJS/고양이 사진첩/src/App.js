@@ -15,7 +15,11 @@ export default function App({ $target }) {
             nodes: this.state.nodes
         },
         onPrevClick: () => {},
-        onClick: () => {}
+        onClick: async (node) => {
+            if (node.type === 'DIRECTORY') {
+                await fetchNodes(node.id);
+            }
+        }
     })
 
     this.setState = nextState => {
