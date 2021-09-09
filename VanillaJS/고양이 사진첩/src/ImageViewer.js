@@ -30,5 +30,11 @@ export default function ImageViewer({ $target, onImageViewerClose }) {
         if (e.key === 'Escape') {
             onImageViewerClose();
         }
+    });
+
+    window.addEventListener('click', (e) => {
+        if (Array.from(e.target.classList).includes('Modal')) {
+            onImageViewerClose();
+        }
     })
 }
