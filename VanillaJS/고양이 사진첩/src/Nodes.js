@@ -1,7 +1,7 @@
 export default function Nodes({ $target, initialState, onPrevClick, onCLick }) {
     const $nodes = document.createElement('div');
     $target.appendChild($nodes);
-    $nodes.classList.add('nodes');
+    $nodes.classList.add('Nodes');
 
     this.state = initialState;
 
@@ -20,7 +20,7 @@ export default function Nodes({ $target, initialState, onPrevClick, onCLick }) {
                 </div>
             `}
             ${nodes.map(node => `
-                <div class="Node">
+                <div class="Node" data-id="${node.id}">
                     <img src="${node.type === 'DIRECTORY'
                         ? "https://cdn.roto.codes/images/directory.png"
                         : "https://cdn.roto.codes/images/file.png"
