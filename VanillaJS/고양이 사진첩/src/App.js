@@ -1,13 +1,15 @@
 import Nodes from "./Nodes.js";
 import { request } from "./api.js";
 import ImageViewer from "./ImageViewer.js";
+import Loading from "./Loading.js";
 
 export default function App({ $target }) {
 
     this.state = {
         isRoot: true,
         nodes: [],
-        paths: []
+        paths: [],
+        isLoading: false
     }
 
     const nodes = new Nodes({
@@ -63,6 +65,10 @@ export default function App({ $target }) {
         }
     });
 
+    const loading = new Loading({
+        $target
+    })
+
     this.setState = nextState => {
         this.state = nextState;
 
@@ -74,15 +80,25 @@ export default function App({ $target }) {
         imageViewer.setState({
             selectedImageUrl: this.state.selectedImageUrl
         })
+
+        loading.setState(this.state.isLoading);
     }
 
     const fetchNodes = async (id) => {
+        //데이터를 요청 시작시에는 로딩중=true
+        this.setState({
+            ...this.state,
+            isLoading: true
+        })
+
         const nodes = await request(id ? `/${id}` : '/');
 
+        //데이터 요청 완료 후에는 로딩중=false
         this.setState({
             ...this.state,
             nodes,
-            isRoot: id ? false : true
+            isRoot: id ? false : true,
+            isLoading: false
         })
     }
 
