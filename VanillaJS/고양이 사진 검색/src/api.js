@@ -8,7 +8,7 @@ export const request = async (url) => {
             throw new Error('API 호출 실패');
         }
         
-        return res.json();
+        return await res.json();
     } catch (e) {
         console.error(e.message);
     }
