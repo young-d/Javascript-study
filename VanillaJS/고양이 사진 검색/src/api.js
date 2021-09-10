@@ -1,4 +1,4 @@
-const API_END_POINT = "https://cat-search.roto.codes/api";
+const API_END_POINT = "https://cat-search.roto.codes/api/cats";
 
 export const request = async (url) => {
     try {
