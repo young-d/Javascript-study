@@ -1,3 +1,5 @@
+import { checkIsArray } from "./validate.js";
+
 export default function Nodes({ $target, initialState, onPrevClick, onClick }) {
     const $nodes = document.createElement('div');
     $target.appendChild($nodes);
@@ -6,7 +8,11 @@ export default function Nodes({ $target, initialState, onPrevClick, onClick }) {
     this.state = initialState;
 
     this.setState = nextState => {
-        this.state = nextState;
+        this.state = {
+            ...nextState,
+            nodes: checkIsArray(nextState.nodes)
+        };
+
         this.render();
     }
 
@@ -35,22 +41,21 @@ export default function Nodes({ $target, initialState, onPrevClick, onClick }) {
 
     $nodes.addEventListener('click', e => {
         const $node = e.target.closest('.Node');
-
-        const { id } = $node.dataset;
-
-        //id가 없는 경우는?
-        if (!id) {
-            //뒤로가기(<) 클릭 처리
-            onPrevClick();
-        }
-
-        const node = this.state.nodes.find(node => node.id === id);
-
-        //방어코드
-        if (node) {
-            onClick(node);
-        } else {
-            onPrevClick();
+        
+        if ($node) {
+            const { id } = $node.dataset;
+    
+            if (!id) {
+                onPrevClick();
+            } 
+    
+            const targetNode = this.state.nodes.find(node => node.id === id);
+    
+            if (targetNode) {
+                onClick(targetNode);
+            } else {
+                onPrevClick();
+            }
         }
     })
 }

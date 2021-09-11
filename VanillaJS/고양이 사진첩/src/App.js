@@ -19,7 +19,9 @@ export default function App({ $target }) {
 
     const breadcrumb = new Breadcrumb({
         $target,
-        initialState: this.state.paths,
+        initialState: {
+            paths: this.state.paths
+        },
         onClickItem: async (id) => {
             //클릭한 경로 외에 paths를 날려준다.
             if (id) {
@@ -102,9 +104,7 @@ export default function App({ $target }) {
             nodes: this.state.nodes
         })
 
-        imageViewer.setState({
-            selectedImageUrl: this.state.selectedImageUrl
-        })
+        imageViewer.setState(this.state.selectedImageUrl);
 
         loading.setState(this.state.isLoading);
 

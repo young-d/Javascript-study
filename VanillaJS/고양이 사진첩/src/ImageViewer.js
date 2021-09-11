@@ -1,3 +1,5 @@
+import { checkUrlForm } from "./validate.js";
+
 export default function ImageViewer({ $target, onImageViewerClose }) {
     const $imageViewer = document.createElement('div');
     $imageViewer.className = 'ImageViewer Modal';
@@ -8,7 +10,10 @@ export default function ImageViewer({ $target, onImageViewerClose }) {
     }
 
     this.setState = nextState => {
-        this.state = nextState;
+        this.state = {
+            selectedImageUrl: nextState ? checkUrlForm(nextState) : null
+        };
+
         this.render();
     }
 

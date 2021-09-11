@@ -1,3 +1,5 @@
+import { checkIsArray } from "./validate.js";
+
 export default function Breadcrumb({ $target, initialState, onClickItem }) {
     const $breadcrumb = document.createElement('div');
     $breadcrumb.className = 'Breadcrumb';
@@ -6,14 +8,16 @@ export default function Breadcrumb({ $target, initialState, onClickItem }) {
     this.state = initialState;
 
     this.setState = nextState => {
-        this.state = nextState;
+        this.state = {
+            paths: checkIsArray(nextState)
+        };
         this.render();
     }
 
     this.render = () => {
         $breadcrumb.innerHTML = `
             <div class="Breadcrumb__item">Root</div>
-            ${this.state.map(({ id, name }) => `
+            ${this.state.paths.map(({ id, name }) => `
                 <div class="Breadcrumb__item" data-id="${id}">${name}</div>
             `).join('')}
         `;
@@ -23,8 +27,12 @@ export default function Breadcrumb({ $target, initialState, onClickItem }) {
 
     $breadcrumb.addEventListener('click', (e) => {
         const $breadcrumbItem = e.target.closest('.Breadcrumb__item');
-        const { id } = $breadcrumbItem.dataset;
 
-        onClickItem(id);
+        if ($breadcrumbItem) {
+            const { id } = $breadcrumbItem.dataset;
+    
+            onClickItem(id);
+        }
+
     })
 }
