@@ -64,4 +64,11 @@ export default function Nodes({ $target, initialState, onPrevClick, onClick }) {
             }
         }
     });
+
+    //루트 경로가 아닐 경우 backspace 키입력 시 이전 경로로 이동
+    window.addEventListener('keyup', (e) => {
+        if (!this.state.isRoot && e.key === 'Backspace') {
+            onPrevClick();
+        }
+    });
 }
