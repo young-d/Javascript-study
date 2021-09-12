@@ -14,6 +14,15 @@ export const checkIsArray = (state) => {
     return state;
 }
 
+export const checkIsBoolean = (state) => {
+    const validation = (typeof state === 'boolean');
+    const errorMessage = 'state type must be Boolean';
+
+    validateState(validation, errorMessage);
+
+    return state;
+}
+
 //validate state is URL form 
 export const checkUrlForm = (state) => {
     const urlRegExp = new RegExp('^(http|https)://', 'i');
@@ -25,12 +34,3 @@ export const checkUrlForm = (state) => {
     return state;
 }
 
-//validate state is Boolean type
-export const checkIsBoolean = (state) => {
-    const validation = typeof state === 'boolean';
-    const errorMessage = 'state type must be Boolean';
-
-    validateState(validation, errorMessage);
-
-    return state;
-}
