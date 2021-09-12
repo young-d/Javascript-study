@@ -8,7 +8,6 @@ export default function Breadcrumb({ $target, initialState, onClickItem }) {
     this.state = initialState;
 
     this.setState = nextState => {
-        // 변경 사항 있을 때만 상태 변경 및 렌더링
         if ([...this.state.paths].length !== [...nextState].length) {
             this.state = {
                 paths: checkIsArray(nextState)

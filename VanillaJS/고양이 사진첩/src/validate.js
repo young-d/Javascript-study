@@ -14,6 +14,7 @@ export const checkIsArray = (state) => {
     return state;
 }
 
+//validate state is Boolean type
 export const checkIsBoolean = (state) => {
     const validation = (typeof state === 'boolean');
     const errorMessage = 'state type must be Boolean';

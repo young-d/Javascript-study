@@ -10,7 +10,6 @@ export default function ImageViewer({ $target, onImageViewerClose }) {
     }
 
     this.setState = nextState => {
-        //변경 사항이 있을 경우에만 상태 변경 및 렌더링
         if (this.state.selectedImageUrl !== nextState) {
             this.state = {
                 selectedImageUrl: nextState ? checkUrlForm(nextState) : null

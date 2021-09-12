@@ -8,7 +8,6 @@ export default function Nodes({ $target, initialState, onMovePrevPath, onClickNo
     this.state = initialState;
 
     this.setState = nextState => {
-        //변경 사항이 있을 때만 상태 변경 및 렌더링
         if (getNodesId(this.state.nodes) !== getNodesId(nextState.nodes)) {
             this.state = {
                 isRoot: checkIsBoolean(nextState.isRoot),
@@ -65,7 +64,6 @@ export default function Nodes({ $target, initialState, onMovePrevPath, onClickNo
         }
     });
 
-    //루트 경로가 아닐 경우 backspace 키입력 시 이전 경로로 이동
     window.addEventListener('keyup', (e) => {
         if (e.key === 'Backspace') {
             onMovePrevPath();

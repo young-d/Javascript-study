@@ -28,7 +28,6 @@ export default function App({ $target }) {
             const pathIndex = currentPaths.findIndex(path => path.id === id);
             const targetPaths = id ? currentPaths.slice(0, pathIndex + 1) : []
             
-            //클릭한 경로가 현재 경로가 아닌 경우에만 상태 변경
             if ([...currentPaths].length !== [...targetPaths].length) {
                 this.setState({
                     ...this.state,
