@@ -1,6 +1,6 @@
 import { checkIsArray, checkIsBoolean } from "./validate.js";
 
-export default function Nodes({ $target, initialState, onPrevClick, onClick }) {
+export default function Nodes({ $target, initialState, onMovePrevPath, onClickNode }) {
     const $nodes = document.createElement('div');
     $target.appendChild($nodes);
     $nodes.classList.add('Nodes');
@@ -53,22 +53,22 @@ export default function Nodes({ $target, initialState, onPrevClick, onClick }) {
             const { id } = $node.dataset;
     
             if (!id) {
-                onPrevClick();
+                onMovePrevPath();
                 return;
             } 
     
             const targetNode = this.state.nodes.find(node => node.id === id);
     
             if (targetNode) {
-                onClick(targetNode);
+                onClickNode(targetNode);
             }
         }
     });
 
     //루트 경로가 아닐 경우 backspace 키입력 시 이전 경로로 이동
     window.addEventListener('keyup', (e) => {
-        if (!this.state.isRoot && e.key === 'Backspace') {
-            onPrevClick();
+        if (e.key === 'Backspace') {
+            onMovePrevPath();
         }
     });
 }

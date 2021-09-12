@@ -47,24 +47,28 @@ export default function App({ $target }) {
             isRoot: this.state.isRoot,
             nodes: this.state.nodes,
         },
-        onPrevClick: async () => {
-            const nextPaths = [...this.state.paths];
-            nextPaths.pop();
+        onMovePrevPath: async () => {
+            const { isRoot, selectedImageUrl } = this.state;
 
-            this.setState({
-                ...this.state,
-                paths: nextPaths
-            });
-
-            const { paths } = this.state;
-
-            if (paths.length === 0) {
-                await fetchNodes();
-            } else {
-                await fetchNodes(paths[paths.length - 1].id);
+            if (!isRoot && !selectedImageUrl) {
+                const nextPaths = [...this.state.paths];
+                nextPaths.pop();
+                
+                this.setState({
+                    ...this.state,
+                    paths: nextPaths
+                });
+                
+                const { paths } = this.state;
+                
+                if (paths.length === 0) {
+                    await fetchNodes();
+                } else {
+                    await fetchNodes(paths[paths.length - 1].id);
+                }
             }
         },
-        onClick: async (node) => {
+        onClickNode: async (node) => {
             if (node.type === 'DIRECTORY') {
                 await fetchNodes(node.id);
                 
