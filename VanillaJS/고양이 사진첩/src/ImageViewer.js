@@ -10,11 +10,14 @@ export default function ImageViewer({ $target, onImageViewerClose }) {
     }
 
     this.setState = nextState => {
-        this.state = {
-            selectedImageUrl: nextState ? checkUrlForm(nextState) : null
-        };
-
-        this.render();
+        //변경 사항이 있을 경우에만 상태 변경 및 렌더링
+        if (this.state.selectedImageUrl !== nextState) {
+            this.state = {
+                selectedImageUrl: nextState ? checkUrlForm(nextState) : null
+            };
+    
+            this.render();
+        }
     }
 
     this.render = () => {
@@ -29,9 +32,7 @@ export default function ImageViewer({ $target, onImageViewerClose }) {
 
     this.render();
 
-    //이미지 모달 닫는 이벤트
     window.addEventListener('keyup', (e) => {
-        //만약 누른 키가 esc인 경우 이벤트를 호출
         if (e.key === 'Escape') {
             onImageViewerClose();
         }
@@ -41,5 +42,5 @@ export default function ImageViewer({ $target, onImageViewerClose }) {
         if (Array.from(e.target.classList).includes('Modal')) {
             onImageViewerClose();
         }
-    })
+    });
 }

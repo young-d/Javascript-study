@@ -10,7 +10,8 @@ export default function App({ $target }) {
         isRoot: true,
         nodes: [],
         paths: [],
-        isLoading: false
+        isLoading: false,
+        selectedImageUrl: null
     }
 
     const loading = new Loading({
@@ -23,23 +24,20 @@ export default function App({ $target }) {
             paths: this.state.paths
         },
         onClickItem: async (id) => {
-            //클릭한 경로 외에 paths를 날려준다.
-            if (id) {
-                const nextPaths = id ? [...this.state.paths] : [];
-                const pathIndex = nextPaths.findIndex(path => path.id === id);
-                
+            const currentPaths = [...this.state.paths];
+            const pathIndex = currentPaths.findIndex(path => path.id === id);
+            const targetPaths = id ? currentPaths.slice(0, pathIndex + 1) : []
+            
+            //클릭한 경로가 현재 경로가 아닌 경우에만 상태 변경
+            if ([...currentPaths].length !== [...targetPaths].length) {
                 this.setState({
                     ...this.state,
-                    paths: nextPaths.slice(0, pathIndex + 1)
-                })
-            } else {
-                this.setState({
-                    ...this.state,
-                    paths: []
-                })
+                    paths: targetPaths
+                });
+
+                await fetchNodes(id);
             }
 
-            await fetchNodes(id);
         }
     });
 
@@ -48,16 +46,15 @@ export default function App({ $target }) {
         initialState: {
             isRoot: this.state.isRoot,
             nodes: this.state.nodes,
-            selectedImageUrl: null,
-            paths: this.state.paths
         },
         onPrevClick: async () => {
             const nextPaths = [...this.state.paths];
             nextPaths.pop();
+
             this.setState({
                 ...this.state,
                 paths: nextPaths
-            })
+            });
 
             const { paths } = this.state;
 
@@ -74,14 +71,14 @@ export default function App({ $target }) {
                 this.setState({
                     ...this.state,
                     paths: [...this.state.paths, node]
-                })
+                });
             }
 
             if (node.type === 'FILE') {
                 this.setState({
                     ...this.state,
                     selectedImageUrl: `https://cat-api.roto.codes/static${node.filePath}`
-                })
+                });
             }
         }
     });
@@ -92,41 +89,39 @@ export default function App({ $target }) {
             this.setState({
                 ...this.state,
                 selectedImageUrl: null
-            })
+            });
         }
     });
 
     this.setState = nextState => {
         this.state = nextState;
 
-        nodes.setState({
-            isRoot: this.state.isRoot,
-            nodes: this.state.nodes
-        })
-
-        imageViewer.setState(this.state.selectedImageUrl);
-
         loading.setState(this.state.isLoading);
 
         breadcrumb.setState(this.state.paths);
+
+        nodes.setState({
+            isRoot: this.state.isRoot,
+            nodes: this.state.nodes
+        });
+
+        imageViewer.setState(this.state.selectedImageUrl);
     };
 
     const fetchNodes = async (id) => {
-        //데이터를 요청 시작시에는 로딩중=true
         this.setState({
             ...this.state,
             isLoading: true
-        })
+        });
 
         const nodes = await request(id ? `/${id}` : '/');
 
-        //데이터 요청 완료 후에는 로딩중=false
         this.setState({
             ...this.state,
             nodes,
             isRoot: id ? false : true,
             isLoading: false
-        })
+        });
     };
 
     fetchNodes();

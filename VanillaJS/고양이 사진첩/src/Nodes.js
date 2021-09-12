@@ -1,4 +1,4 @@
-import { checkIsArray } from "./validate.js";
+import { checkIsArray, checkIsBoolean } from "./validate.js";
 
 export default function Nodes({ $target, initialState, onPrevClick, onClick }) {
     const $nodes = document.createElement('div');
@@ -8,12 +8,19 @@ export default function Nodes({ $target, initialState, onPrevClick, onClick }) {
     this.state = initialState;
 
     this.setState = nextState => {
-        this.state = {
-            ...nextState,
-            nodes: checkIsArray(nextState.nodes)
-        };
-
-        this.render();
+        //변경 사항이 있을 때만 상태 변경 및 렌더링
+        if (getNodesId(this.state.nodes) !== getNodesId(nextState.nodes)) {
+            this.state = {
+                isRoot: checkIsBoolean(nextState.isRoot),
+                nodes: checkIsArray(nextState.nodes)
+            };
+            
+            this.render();
+        }
+    }
+    
+    const getNodesId = (nodes = []) => {
+        return Object.values(nodes).map(({ id }) => id).join('');
     }
 
     this.render = () => {
@@ -39,7 +46,7 @@ export default function Nodes({ $target, initialState, onPrevClick, onClick }) {
 
     this.render();
 
-    $nodes.addEventListener('click', e => {
+    $nodes.addEventListener('click', (e) => {
         const $node = e.target.closest('.Node');
         
         if ($node) {
@@ -47,15 +54,14 @@ export default function Nodes({ $target, initialState, onPrevClick, onClick }) {
     
             if (!id) {
                 onPrevClick();
+                return;
             } 
     
             const targetNode = this.state.nodes.find(node => node.id === id);
     
             if (targetNode) {
                 onClick(targetNode);
-            } else {
-                onPrevClick();
             }
         }
-    })
+    });
 }
