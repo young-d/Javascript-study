@@ -34,4 +34,3 @@ export const checkUrlForm = (state) => {
 
     return state;
 }
-
