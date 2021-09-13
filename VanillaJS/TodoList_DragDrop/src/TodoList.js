@@ -1,5 +1,7 @@
 export default function TodoList({ $target, initialState }) {
     const $todoList = document.createElement('div');
+    $target.appendChild($todoList);
+
     this.state = initialState;
 
     this.setState = nextState => {
@@ -8,6 +10,7 @@ export default function TodoList({ $target, initialState }) {
     }
 
     this.render = () => {
+        console.log(this.state.title);
         const { title, todos = [] } = this.state;
         $todoList.innerHTML = `
             <h2>${title}</h2>

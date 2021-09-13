@@ -1,6 +1,28 @@
 import TodoList from "./TodoList.js";
+import { request } from "./api.js";
 
-export default functino App({ $target }) {
+export default function App({ $target }) {
+    this.state = {
+        todos: []
+    }
+
+    this.setState = nextState => {
+        this.state = nextState;
+
+        const { todos } = this.state;
+
+        incompletedTodoList.setState({
+            ...incompletedTodoList.state,
+            todos: todos.filter(todo => !todo.isCompleted)
+        });
+
+        completedTodoList.setState({
+            ...completedTodoList.state,
+            todos: todos.filter(todo => todo.isCompleted)
+        });
+    }
+
+
     const incompletedTodoList = new TodoList({
         $target,
         initialState: {
@@ -16,4 +38,15 @@ export default functino App({ $target }) {
             todos: []
         }
     });
+
+    const fetchTodos = async() => {
+        const todos = await request('');
+
+        this.setState({
+            ...this.state,
+            todos
+        });
+    }
+
+    fetchTodos();
 }
