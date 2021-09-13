@@ -1,9 +1,11 @@
 import TodoList from "./TodoList.js";
 import { request } from "./api.js";
-import TaskQueue from "./TaskQueue.js";
+// import TaskManager from "./TaskManager.js";
+import SyncTasksManager from "./SyncTasksManager.js";
 
 export default function App({ $target }) {
-    const tasks = new TaskQueue();
+    // const tasks = new TaskManager();
+    const tasks = new SyncTasksManager();
 
     this.state = {
         todos: []
@@ -44,10 +46,16 @@ export default function App({ $target }) {
             });
 
             //TaskQueue에 수정 작업 추가
-            tasks.addTask(async () => {
-                await request(`/${todoId}/toggle`, {
-                    metode: 'PUT'
-                })
+            // tasks.addTask(async () => {
+            //     await request(`/${todoId}/toggle`, {
+            //         metode: 'PUT'
+            //     })
+            // });
+
+            //SyncTaskManager 로 한 번에 동기화하기
+            tasks.addTask({
+                url: `/${todoId}/toggle`,
+                method: 'PUT'
             });
         }
     });
@@ -70,10 +78,16 @@ export default function App({ $target }) {
             });
 
             //TaskQueue에 수정 작업 추가
-            tasks.addTask(async () => {
-                await request(`/${todoId}/toggle`, {
-                    metode: 'PUT'
-                })
+            // tasks.addTask(async () => {
+            //     await request(`/${todoId}/toggle`, {
+            //         metode: 'PUT'
+            //     })
+            // });
+
+            //SyncTaskManager 로 한 번에 동기화하기
+            tasks.addTask({
+                url: `/${todoId}/toggle`,
+                method: 'PUT'
             });
         }
     });
