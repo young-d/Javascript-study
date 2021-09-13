@@ -1,7 +1,10 @@
 import TodoList from "./TodoList.js";
 import { request } from "./api.js";
+import TaskQueue from "./TaskQueue.js";
 
 export default function App({ $target }) {
+    const tasks = new TaskQueue();
+
     this.state = {
         todos: []
     }
@@ -40,13 +43,12 @@ export default function App({ $target }) {
                 todos: nextTodos
             });
 
-            //todos 수정 요청
-            await request(`/${todoId}/toggle`, {
-                method: 'PUT'
+            //TaskQueue에 수정 작업 추가
+            tasks.addTask(async () => {
+                await request(`/${todoId}/toggle`, {
+                    metode: 'PUT'
+                })
             });
-
-            //todos 조회 요청
-            await fetchTodos();
         }
     });
 
@@ -67,13 +69,12 @@ export default function App({ $target }) {
                 todos: nextTodos
             });
 
-            //todos 수정 요청
-            await request(`/${todoId}/toggle`, {
-                method: 'PUT'
+            //TaskQueue에 수정 작업 추가
+            tasks.addTask(async () => {
+                await request(`/${todoId}/toggle`, {
+                    metode: 'PUT'
+                })
             });
-
-            //todos 조회 요청
-            await fetchTodos();
         }
     });
 
@@ -86,5 +87,14 @@ export default function App({ $target }) {
         });
     }
 
+    //fetch는 최초 한 번만 실행
     fetchTodos();
+
+    //taskqueue 에 있는 작업 한 번에 실행하기
+    const $button = document.createElement('button');
+    $button.textContent = '변경 내용 동기화';
+
+    $target.appendChild($button);
+
+    $button.addEventListener('click', () => tasks.run());
 }
