@@ -30,10 +30,22 @@ export default function App({ $target }) {
             todos: []
         }, 
         onDrop: async (todoId) => {
+            //낙관적 업데이트
+            const nextTodos = [...this.state.todos];
+            const todoIndex = nextTodos.findIndex(todo => todo._id === todoId);
+
+            nextTodos[todoIndex].isCompleted = false;
+            this.setState({
+                ...this.state,
+                todos: nextTodos
+            });
+
+            //todos 수정 요청
             await request(`/${todoId}/toggle`, {
                 method: 'PUT'
             });
 
+            //todos 조회 요청
             await fetchTodos();
         }
     });
@@ -45,10 +57,22 @@ export default function App({ $target }) {
             todos: []
         },
         onDrop: async (todoId) => {
+            //낙관적 업데이트
+            const nextTodos = [...this.state.todos];
+            const todoIndex = nextTodos.findIndex(todo => todo._id === todoId);
+
+            nextTodos[todoIndex].isCompleted = true;
+            this.setState({
+                ...this.state,
+                todos: nextTodos
+            });
+
+            //todos 수정 요청
             await request(`/${todoId}/toggle`, {
                 method: 'PUT'
             });
 
+            //todos 조회 요청
             await fetchTodos();
         }
     });
