@@ -28,6 +28,13 @@ export default function App({ $target }) {
         initialState: {
             title: '완료되지 않은 일들',
             todos: []
+        }, 
+        onDrop: async (todoId) => {
+            await request(`/${todoId}/toggle`, {
+                method: 'PUT'
+            });
+
+            await fetchTodos();
         }
     });
 
@@ -36,6 +43,13 @@ export default function App({ $target }) {
         initialState: {
             title: '완료된 일들',
             todos: []
+        },
+        onDrop: async (todoId) => {
+            await request(`/${todoId}/toggle`, {
+                method: 'PUT'
+            });
+
+            await fetchTodos();
         }
     });
 

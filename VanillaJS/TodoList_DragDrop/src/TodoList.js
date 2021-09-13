@@ -1,6 +1,6 @@
-export default function TodoList({ $target, initialState }) {
+export default function TodoList({ $target, initialState, onDrop }) {
     const $todoList = document.createElement('div');
-    $todoList.setAttribute('dragable', 'true');
+    $todoList.setAttribute('droppable', 'true');
     $target.appendChild($todoList);
 
     this.state = initialState;
@@ -11,12 +11,11 @@ export default function TodoList({ $target, initialState }) {
     }
 
     this.render = () => {
-        console.log(this.state.title);
         const { title, todos = [] } = this.state;
         $todoList.innerHTML = `
             <h2>${title}</h2>
             <ul>
-                ${todos.map(todo => `<li dragable="true">${todo}</li>`).join('')}
+                ${todos.map(todo => `<li data-id="${todo._id}" draggable="true">${todo.content}</li>`).join('')}
             </ul>
             ${todos.length === 0 ? '설정된 일이 없습니다.' : ''}
         `;
@@ -24,12 +23,35 @@ export default function TodoList({ $target, initialState }) {
 
     this.render();
 
-     $todoList.addEventListener('dragover', (e) => {
-         e.preventDefault();
-         e.dataTransfer.dropEffect = 'move';
+    //dragstart 이벤트(drag 시작할 때)
+    $todoList.addEventListener('dragstart', (e) => {
+        const $li = e.target.closest('li');
+
+        if ($li) {
+            e.dataTransfer.setData('todoId', $li.dataset.id);
+        }
+    })
+
+    //dragover 이벤트(drag 끝났을 때)
+    $todoList.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
      });
 
+     //drop 이벤트(drop 했을 때)
      $todoList.addEventListener('drop', (e) => {
          e.preventDefault();
+
+        const droppedTodoId = e.dataTransfer.getData('todoId');
+
+        //현재 TodoList의 Todo가 아닌 경우 상위 컴포넌트에 알림
+        const { todos } = this.state;
+
+        if (!todos.find(todo => todo._id === droppedTodoId)) {
+            onDrop(droppedTodoId);
+        }
      });
+
+
+
 }
