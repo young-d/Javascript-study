@@ -5,7 +5,6 @@ export default function SyncTasksManager() {
 
     this.addTask = (task) => {
         tasks.push(task);
-        console.log(tasks);        
     }
 
     this.run = async () => {

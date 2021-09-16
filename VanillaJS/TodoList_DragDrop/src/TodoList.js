@@ -51,7 +51,4 @@ export default function TodoList({ $target, initialState, onDrop }) {
             onDrop(droppedTodoId);
         }
      });
-
-
-
 }
